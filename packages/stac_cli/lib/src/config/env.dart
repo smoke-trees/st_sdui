@@ -35,26 +35,26 @@ class EnvConfig {
   });
 }
 
-String? _value(String key) {
+String? _env(String key, {String? defaultValue, bool required = false}) {
   final raw = _resolvedEnvironment[key];
-  if (raw == null) return null;
-  final trimmed = raw.trim();
-  return trimmed.isEmpty ? null : trimmed;
-}
-
-String _requiredValue(String key) {
-  final value = _value(key);
-  if (value == null) {
+  if (raw != null) {
+    final trimmed = raw.trim();
+    if (trimmed.isNotEmpty) return trimmed;
+  }
+  if (defaultValue != null && defaultValue.isNotEmpty) {
+    return defaultValue;
+  }
+  if (required) {
     throw StateError('Missing required environment variable: $key');
   }
-  return value;
+  return null;
 }
 
 EnvConfig get env {
   return EnvConfig(
-    baseApiUrl: _requiredValue('STAC_BASE_API_URL'),
-    googleOAuthClientId: _requiredValue('STAC_GOOGLE_CLIENT_ID'),
-    googleOAuthClientSecret: _value('STAC_GOOGLE_CLIENT_SECRET'),
-    firebaseWebApiKey: _requiredValue('STAC_FIREBASE_API_KEY'),
+    baseApiUrl: _env('STAC_BASE_API_URL', required: true)!,
+    googleOAuthClientId: _env('STAC_GOOGLE_CLIENT_ID', required: true)!,
+    googleOAuthClientSecret: _env('STAC_GOOGLE_CLIENT_SECRET'),
+    firebaseWebApiKey: _env('STAC_FIREBASE_API_KEY', required: true)!,
   );
 }
