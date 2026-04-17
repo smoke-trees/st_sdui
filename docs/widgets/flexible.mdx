@@ -3,6 +3,18 @@ title: "Flexible"
 description: "Documentation for Flexible"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const flexiblePreviewJson = {
+  "type": "flexible",
+  "flex": 2,
+  "fit": "tight",
+  "child": {
+    "type": "text",
+    "data": "Hello, World!"
+  }
+};
+export const flexiblePreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac Flexible allows you to build a Flutter flexible widget using JSON.
 To know more about the flexible widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Flexible-class.html).
 
@@ -16,8 +28,10 @@ To know more about the flexible widget in Flutter, refer to the [official docume
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacFlexible(
   flex: 2,
   fit: StacFlexFit.tight,
@@ -25,7 +39,10 @@ StacFlexible(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "flexible",
   "flex": 2,
@@ -36,4 +53,36 @@ StacFlexible(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={flexiblePreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: flexiblePreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

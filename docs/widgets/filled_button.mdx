@@ -3,6 +3,26 @@ title: "FilledButton"
 description: "Documentation for FilledButton"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const filledButtonPreviewJson = {
+  "type": "filledButton",
+  "onPressed": {},
+  "onLongPress": {},
+  "onHover": {},
+  "onFocusChange": {},
+  "style": {
+    "backgroundColor": "#FFC107",
+    "foregroundColor": "#000000"
+  },
+  "autofocus": false,
+  "clipBehavior": "none",
+  "child": {
+    "type": "text",
+    "data": "Click Me!"
+  }
+};
+export const filledButtonPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac Filled Button allows you to build a Flutter filled button widget using JSON.
 To know more about the filled button widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/FilledButton-class.html).
 
@@ -21,8 +41,10 @@ To know more about the filled button widget in Flutter, refer to the [official d
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacFilledButton(
   onPressed: StacNoneAction(),
   style: StacButtonStyle(
@@ -35,7 +57,10 @@ StacFilledButton(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "filledButton",
   "onPressed": {},
@@ -54,4 +79,36 @@ StacFilledButton(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={filledButtonPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: filledButtonPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

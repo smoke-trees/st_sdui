@@ -3,6 +3,26 @@ title: "TextButton"
 description: "Documentation for TextButton"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const textButtonPreviewJson = {
+  "type": "textButton",
+  "onPressed": {},
+  "onLongPress": {},
+  "onHover": {},
+  "onFocusChange": {},
+  "style": {
+    "backgroundColor": "#FFC107",
+    "foregroundColor": "#000000"
+  },
+  "autofocus": false,
+  "clipBehavior": "none",
+  "child": {
+    "type": "text",
+    "data": "Click Me!"
+  }
+};
+export const textButtonPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac Text Button allows you to build a Flutter text button widget using JSON.
 To know more about the text button widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/TextButton-class.html).
 
@@ -22,8 +42,10 @@ To know more about the text button widget in Flutter, refer to the [official doc
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacTextButton(
   onPressed: StacNoneAction(),
   style: StacButtonStyle(
@@ -36,7 +58,10 @@ StacTextButton(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "textButton",
   "onPressed": {},
@@ -55,4 +80,36 @@ StacTextButton(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={textButtonPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: textButtonPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

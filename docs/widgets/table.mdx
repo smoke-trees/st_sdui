@@ -3,6 +3,134 @@ title: "Table"
 description: "Documentation for Table"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const tablePreviewJson = {
+  "type": "table",
+  "columnWidths": {
+    "1": {
+      "type": "fixedColumnWidth",
+      "value": 200
+    }
+  },
+  "defaultColumnWidth": {
+    "type": "flexColumnWidth",
+    "value": 1
+  },
+  "textDirection": "ltr",
+  "defaultVerticalAlignment": "bottom",
+  "border": {
+    "color": "#428AF5",
+    "width": 1,
+    "style": "solid",
+    "borderRadius": {
+      "topLeft": 16,
+      "topRight": 16,
+      "bottomLeft": 16,
+      "bottomRight": 16
+    }
+  },
+  "children": [
+    {
+      "type": "tableRow",
+      "children": [
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "container",
+            "color": "#40000000",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Header 1"
+              }
+            }
+          }
+        },
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "container",
+            "color": "#40000000",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Header 2"
+              }
+            }
+          }
+        },
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "container",
+            "color": "#40000000",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Header 3"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "tableRow",
+      "children": [
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "sizedBox",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Row 1, Cell 1"
+              }
+            }
+          }
+        },
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "sizedBox",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Row 1, Cell 2"
+              }
+            }
+          }
+        },
+        {
+          "type": "tableCell",
+          "child": {
+            "type": "sizedBox",
+            "height": 50,
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "Row 1, Cell 3"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+};
+export const tablePreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 StacTable allows you to build the Flutter Table widget using JSON.
 To know more about the Table widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Table-class.html).
 
@@ -20,8 +148,10 @@ To know more about the Table widget in Flutter, refer to the [official documenta
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacTable(
   columnWidths: {
     1: StacFixedColumnWidth(value: 200),
@@ -87,7 +217,10 @@ StacTable(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "table",
   "columnWidths": {
@@ -104,13 +237,13 @@ StacTable(
   "defaultVerticalAlignment": "bottom",
   "border": {
     "color": "#428AF5",
-    "width": 1.0,
+    "width": 1,
     "style": "solid",
     "borderRadius": {
-      "topLeft": 16.0,
-      "topRight": 16.0,
-      "bottomLeft": 16.0,
-      "bottomRight": 16.0
+      "topLeft": 16,
+      "topRight": 16,
+      "bottomLeft": 16,
+      "bottomRight": 16
     }
   },
   "children": [
@@ -122,7 +255,7 @@ StacTable(
           "child": {
             "type": "container",
             "color": "#40000000",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -137,7 +270,7 @@ StacTable(
           "child": {
             "type": "container",
             "color": "#40000000",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -152,7 +285,7 @@ StacTable(
           "child": {
             "type": "container",
             "color": "#40000000",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -171,7 +304,7 @@ StacTable(
           "type": "tableCell",
           "child": {
             "type": "sizedBox",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -185,7 +318,7 @@ StacTable(
           "type": "tableCell",
           "child": {
             "type": "sizedBox",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -199,7 +332,7 @@ StacTable(
           "type": "tableCell",
           "child": {
             "type": "sizedBox",
-            "height": 50.0,
+            "height": 50,
             "child": {
               "type": "center",
               "child": {
@@ -214,4 +347,36 @@ StacTable(
   ]
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={tablePreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: tablePreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

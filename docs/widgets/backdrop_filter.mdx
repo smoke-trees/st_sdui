@@ -3,6 +3,49 @@ title: "BackdropFilter"
 description: "Documentation for BackdropFilter"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const backdropFilterPreviewJson = {
+  "type": "clipRRect",
+  "borderRadius": {
+    "all": 16
+  },
+  "child": {
+    "type": "sizedBox",
+    "height": 200,
+    "width": 300,
+    "child": {
+      "type": "stack",
+      "fit": "expand",
+      "children": [
+        {
+          "type": "container",
+          "decoration": {
+            "image": {
+              "src": "https://images.pexels.com/photos/1323550/pexels-photo-1323550.jpeg",
+              "fit": "cover"
+            }
+          }
+        },
+        {
+          "type": "backdropFilter",
+          "filter": {
+            "type": "blur",
+            "sigmaX": 15,
+            "sigmaY": 15
+          },
+          "child": {
+            "type": "container",
+            "decoration": {
+              "color": "#80FFFFFF"
+            }
+          }
+        }
+      ]
+    }
+  }
+};
+export const backdropFilterPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 Stac BackdropFilter allows you to build the Flutter BackdropFilter widget using JSON. This widget applies a filter to the existing painted content and then paints its child. It's commonly used to create frosted glass effects, blurs, and other visual effects.
 To know more about the BackdropFilter widget in Flutter, refer to the official documentation for [Backdrop Filter](https://api.flutter.dev/flutter/widgets/BackdropFilter-class.html) and [Image Filter](https://api.flutter.dev/flutter/dart-ui/ImageFilter-class.html).
 
@@ -64,8 +107,10 @@ For best results with BackdropFilter:
 
 ### Example 1: Frosted Glass Effect
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacClipRRect(
   borderRadius: StacBorderRadius.all(16),
   child: StacSizedBox(
@@ -94,7 +139,10 @@ StacClipRRect(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "clipRRect",
   "borderRadius": {
@@ -121,8 +169,8 @@ StacClipRRect(
           "type": "backdropFilter",
           "filter": {
             "type": "blur",
-            "sigmaX": 15.0,
-            "sigmaY": 15.0
+            "sigmaX": 15,
+            "sigmaY": 15
           },
           "child": {
             "type": "container",
@@ -136,8 +184,39 @@ StacClipRRect(
   }
 }
 ```
-</CodeGroup>
 
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={backdropFilterPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: backdropFilterPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>
 ### Example 2: Dilate Filter Effect
 
 <CodeGroup>

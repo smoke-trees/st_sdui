@@ -3,6 +3,19 @@ title: "NetworkWidget"
 description: "Documentation for NetworkWidget"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const networkWidgetPreviewJson = {
+  "type": "networkWidget",
+  "request": {
+    "url": "https://api.example.com/data",
+    "method": "get",
+    "headers": {
+      "Authorization": "Bearer token"
+    }
+  }
+};
+export const networkWidgetPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac NetworkWidget allows you to build a widget that makes a network request and renders a widget based on the response using JSON.
 
 ## Properties
@@ -13,8 +26,10 @@ The Stac NetworkWidget allows you to build a widget that makes a network request
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacNetworkWidget(
   request: StacNetworkRequest(
     url: 'https://api.example.com/data',
@@ -24,7 +39,10 @@ StacNetworkWidget(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "networkWidget",
   "request": {
@@ -36,4 +54,36 @@ StacNetworkWidget(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={networkWidgetPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: networkWidgetPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

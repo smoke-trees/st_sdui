@@ -3,6 +3,28 @@ title: "SliverVisibility"
 description: "Documentation for SliverVisibility"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const sliverVisibilityPreviewJson = {
+  "type": "sliverVisibility",
+  "visible": false,
+  "sliver": {
+    "type": "sliverToBoxAdapter",
+    "child": {
+      "type": "container",
+      "height": 180,
+      "color": "warning",
+      "child": {
+        "type": "center",
+        "child": {
+          "type": "text",
+          "data": "This sliver is hidden"
+        }
+      }
+    }
+  }
+};
+export const sliverVisibilityPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac SliverVisibility allows you to conditionally show or hide a sliver
 inside a `CustomScrollView`.
 
@@ -27,8 +49,10 @@ the [official documentation](https://api.flutter.dev/flutter/widgets/SliverVisib
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacSliverVisibility(
   visible: false,
   sliver: StacSliverToBoxAdapter(
@@ -43,7 +67,10 @@ StacSliverVisibility(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "sliverVisibility",
   "visible": false,
@@ -64,4 +91,36 @@ StacSliverVisibility(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={sliverVisibilityPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: sliverVisibilityPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

@@ -3,6 +3,16 @@ title: "Center"
 description: "Documentation for Center"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const centerPreviewJson = {
+  "type": "center",
+  "child": {
+    "type": "text",
+    "data": "Hello, World!"
+  }
+};
+export const centerPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac Center allows you to build a Flutter center widget using JSON.
 To know more about the center widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Center-class.html).
 
@@ -16,14 +26,19 @@ To know more about the center widget in Flutter, refer to the [official document
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacCenter(
   child: StacText(data: 'Hello, World!'),
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "center",
   "child": {
@@ -32,4 +47,36 @@ StacCenter(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={centerPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: centerPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

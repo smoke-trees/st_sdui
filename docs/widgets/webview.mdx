@@ -3,6 +3,13 @@ title: "WebView"
 description: "Documentation for WebView"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const webviewPreviewJson = {
+  "type": "webView",
+  "url": "https://github.com/StacDev/stac"
+};
+export const webviewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac WebView allows you to display WebView widget using JSON in your app. It is based on the [webview_flutter](https://pub.dev/packages/webview_flutter) plugin.
 
 ## Usage
@@ -48,17 +55,54 @@ void main() async {
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacWebView(
   url: 'https://github.com/StacDev/stac',
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "webView",
   "url": "https://github.com/StacDev/stac"
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={webviewPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: webviewPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

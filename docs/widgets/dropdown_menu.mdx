@@ -3,6 +3,44 @@ title: "DropdownMenu"
 description: "Documentation for DropdownMenu"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const dropdownMenuPreviewJson = {
+  "type": "dropdownMenu",
+  "label": {
+    "type": "text",
+    "data": "Select an option"
+  },
+  "hintText": "Please select",
+  "width": 200,
+  "dropdownMenuEntries": [
+    {
+      "value": "option1",
+      "label": "Option 1",
+      "leadingIcon": {
+        "type": "icon",
+        "iconData": "home"
+      }
+    },
+    {
+      "value": "option2",
+      "label": "Option 2",
+      "leadingIcon": {
+        "type": "icon",
+        "iconData": "settings"
+      }
+    },
+    {
+      "value": "option3",
+      "label": "Option 3",
+      "leadingIcon": {
+        "type": "icon",
+        "iconData": "favorite"
+      }
+    }
+  ]
+};
+export const dropdownMenuPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac DropdownMenu allows you to build a Flutter DropdownMenu widget using JSON.
 To know more about the DropdownMenu widget in Flutter, refer to
 the [official documentation](https://api.flutter.dev/flutter/material/DropdownMenu-class.html).
@@ -46,8 +84,10 @@ the [official documentation](https://api.flutter.dev/flutter/material/DropdownMe
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacDropdownMenu(
   label: StacText(data: 'Select an option'),
   hintText: 'Please select',
@@ -72,7 +112,10 @@ StacDropdownMenu(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "dropdownMenu",
   "label": {
@@ -109,4 +152,36 @@ StacDropdownMenu(
   ]
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={dropdownMenuPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: dropdownMenuPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

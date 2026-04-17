@@ -3,6 +3,34 @@ title: "AppBar"
 description: "Documentation for AppBar"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const appBarPreviewJson = {
+  "type": "appBar",
+  "title": {
+    "type": "text",
+    "data": "App Bar Title"
+  },
+  "backgroundColor": "#FFFFFF",
+  "foregroundColor": "#000000",
+  "actions": [
+    {
+      "type": "iconButton",
+      "icon": {
+        "type": "icon",
+        "icon": "search"
+      }
+    },
+    {
+      "type": "iconButton",
+      "icon": {
+        "type": "icon",
+        "icon": "settings"
+      }
+    }
+  ]
+};
+export const appBarPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac AppBar allows you to build a Flutter app bar widget using JSON.
 To know more about the app bar widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/AppBar-class.html).
 
@@ -32,8 +60,10 @@ To know more about the app bar widget in Flutter, refer to the [official documen
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacAppBar(
   title: StacText(data: 'App Bar Title'),
   backgroundColor: StacColors.white,
@@ -49,7 +79,10 @@ StacAppBar(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "appBar",
   "title": {
@@ -76,4 +109,36 @@ StacAppBar(
   ]
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={appBarPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: appBarPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

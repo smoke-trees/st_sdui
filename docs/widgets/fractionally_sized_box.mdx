@@ -3,6 +3,23 @@ title: "FractionallySizedBox"
 description: "Documentation for FractionallySizedBox"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const fractionallySizedBoxPreviewJson = {
+  "type": "fractionallySizedBox",
+  "alignment": "center",
+  "widthFactor": 0.5,
+  "heightFactor": 0.5,
+  "child": {
+    "type": "container",
+    "color": "#FF5733",
+    "child": {
+      "type": "text",
+      "data": "Hello, World!"
+    }
+  }
+};
+export const fractionallySizedBoxPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac FractionallySizedBox allows you to build a Flutter fractionally sized box widget using JSON.
 To know more about the fractionally sized box widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/FractionallySizedBox-class.html).
 
@@ -17,8 +34,10 @@ To know more about the fractionally sized box widget in Flutter, refer to the [o
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 StacFractionallySizedBox(
   alignment: StacAlignment.center,
   widthFactor: 0.5,
@@ -30,7 +49,10 @@ StacFractionallySizedBox(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "fractionallySizedBox",
   "alignment": "center",
@@ -46,4 +68,36 @@ StacFractionallySizedBox(
   }
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={fractionallySizedBoxPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: fractionallySizedBoxPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>

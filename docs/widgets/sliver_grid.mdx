@@ -3,13 +3,84 @@ title: "SliverGrid"
 description: "Documentation for SliverGrid"
 ---
 
+export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+export const sliverGridPreviewJson = {
+  "type": "sliverGrid",
+  "crossAxisCount": 2,
+  "mainAxisSpacing": 16,
+  "crossAxisSpacing": 16,
+  "childAspectRatio": 1,
+  "children": [
+    {
+      "type": "container",
+      "color": "#4CAF50",
+      "child": {
+        "type": "center",
+        "child": {
+          "type": "text",
+          "data": "Grid Item 1",
+          "style": {
+            "color": "#FFFFFF",
+            "fontWeight": "bold"
+          }
+        }
+      }
+    },
+    {
+      "type": "container",
+      "color": "#4CAF50",
+      "child": {
+        "type": "center",
+        "child": {
+          "type": "text",
+          "data": "Grid Item 2",
+          "style": {
+            "color": "#FFFFFF",
+            "fontWeight": "bold"
+          }
+        }
+      }
+    },
+    {
+      "type": "container",
+      "color": "#4CAF50",
+      "child": {
+        "type": "center",
+        "child": {
+          "type": "text",
+          "data": "Grid Item 3",
+          "style": {
+            "color": "#FFFFFF",
+            "fontWeight": "bold"
+          }
+        }
+      }
+    },
+    {
+      "type": "container",
+      "color": "#4CAF50",
+      "child": {
+        "type": "center",
+        "child": {
+          "type": "text",
+          "data": "Grid Item 4",
+          "style": {
+            "color": "#FFFFFF",
+            "fontWeight": "bold"
+          }
+        }
+      }
+    }
+  ]
+};
+export const sliverGridPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+
 The Stac **SliverGrid** allows you to build a Flutter `SliverGrid` widget using JSON.
 It displays its children in a two-dimensional scrollable grid within a sliver
 context.
 
 To learn more about Flutter’s `SliverGrid`, refer to the
 [official documentation](https://api.flutter.dev/flutter/widgets/SliverGrid-class.html).
-
 
 ## Properties
 
@@ -33,8 +104,10 @@ To learn more about Flutter’s `SliverGrid`, refer to the
 
 ## Example
 
-<CodeGroup>
-```dart Dart
+<Tabs sync={false}>
+  <Tab title="Dart">
+
+```dart
 const StacSliverGrid(
   crossAxisCount: 2,
   mainAxisSpacing: 16,
@@ -93,7 +166,10 @@ const StacSliverGrid(
 )
 ```
 
-```json JSON
+  </Tab>
+  <Tab title="JSON">
+
+```json
 {
   "type": "sliverGrid",
   "crossAxisCount": 2,
@@ -164,4 +240,36 @@ const StacSliverGrid(
   ]
 }
 ```
-</CodeGroup>
+
+  </Tab>
+  <Tab title="Preview">
+    <Frame>
+      <iframe
+        id="stac"
+        src={sliverGridPreviewSrc}
+        title="Stac Playground"
+        className="w-full h-[640px] rounded-xl border-0"
+        loading="lazy"
+        onLoad={(event) => {
+          const iframe = event.currentTarget;
+          const targetOrigin = PLAYGROUND_BASE_URL;
+          const message = {
+            type: "stac-preview-json",
+            payload: sliverGridPreviewJson
+          };
+
+          let attempts = 0;
+          const maxAttempts = 12;
+          const interval = setInterval(() => {
+            iframe.contentWindow?.postMessage(message, targetOrigin);
+            attempts += 1;
+
+            if (attempts >= maxAttempts) {
+              clearInterval(interval);
+            }
+          }, 250);
+        }}
+      />
+    </Frame>
+  </Tab>
+</Tabs>
