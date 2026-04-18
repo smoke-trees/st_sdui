@@ -5,15 +5,20 @@ description: "Documentation for Positioned"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const positionedPreviewJson = {
-  "type": "positioned",
-  "left": 10,
-  "top": 20,
-  "right": 30,
-  "bottom": 40,
-  "child": {
-    "type": "text",
-    "data": "Hello, World!"
-  }
+  "type": "stack",
+  "children": [
+    {
+      "type": "positioned",
+      "left": 10,
+      "top": 20,
+      "right": 30,
+      "bottom": 40,
+      "child": {
+        "type": "text",
+        "data": "Hello, World!"
+      }
+    }
+  ]
 };
 export const positionedPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
 

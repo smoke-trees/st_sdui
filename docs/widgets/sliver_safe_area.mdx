@@ -5,14 +5,22 @@ description: "Documentation for SliverSafeArea"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const sliverSafeAreaPreviewJson = {
-  "type": "sliverSafeArea",
-  "top": true,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "text",
-      "data": "Hello World"
-    }
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverSafeArea",
+        "top": true,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "text",
+            "data": "Hello World"
+          }
+        }
+      }
+    ]
   }
 };
 export const sliverSafeAreaPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;

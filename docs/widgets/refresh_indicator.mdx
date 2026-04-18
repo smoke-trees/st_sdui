@@ -11,6 +11,39 @@ export const refreshIndicatorPreviewJson = {
     "url": "https://raw.githubusercontent.com/StacDev/stac/main/examples/stac_gallery/assets/json/list_view_example.json",
     "method": "get",
     "contentType": "application/json"
+  },
+  "child": {
+    "type": "listView",
+    "children": [
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Pull down to refresh"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 1"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 2"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 3"
+        }
+      }
+    ]
   }
 };
 export const refreshIndicatorPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
@@ -45,6 +78,14 @@ StacRefreshIndicator(
     method: Method.get,
     contentType: 'application/json',
   ),
+  child: StacListView(
+    children: [
+      StacListTile(title: StacText(data: 'Pull down to refresh')),
+      StacListTile(title: StacText(data: 'Item 1')),
+      StacListTile(title: StacText(data: 'Item 2')),
+      StacListTile(title: StacText(data: 'Item 3')),
+    ],
+  ),
 )
 ```
 
@@ -59,6 +100,39 @@ StacRefreshIndicator(
     "url": "https://raw.githubusercontent.com/StacDev/stac/main/examples/stac_gallery/assets/json/list_view_example.json",
     "method": "get",
     "contentType": "application/json"
+  },
+  "child": {
+    "type": "listView",
+    "children": [
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Pull down to refresh"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 1"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 2"
+        }
+      },
+      {
+        "type": "listTile",
+        "title": {
+          "type": "text",
+          "data": "Item 3"
+        }
+      }
+    ]
   }
 }
 ```

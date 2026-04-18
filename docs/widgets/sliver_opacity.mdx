@@ -5,22 +5,30 @@ description: "Documentation for SliverOpacity"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const sliverOpacityPreviewJson = {
-  "type": "sliverOpacity",
-  "opacity": 0.5,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "container",
-      "height": 200,
-      "color": "red",
-      "child": {
-        "type": "center",
-        "child": {
-          "type": "text",
-          "data": "I am a faded sliver"
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverOpacity",
+        "opacity": 0.5,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "container",
+            "height": 200,
+            "color": "red",
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "I am a faded sliver"
+              }
+            }
+          }
         }
       }
-    }
+    ]
   }
 };
 export const sliverOpacityPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;

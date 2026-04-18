@@ -5,14 +5,22 @@ description: "Documentation for SliverFillRemaining"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const sliverFillRemainingPreviewJson = {
-  "type": "sliverFillRemaining",
-  "hasScrollBody": false,
-  "child": {
-    "type": "center",
-    "child": {
-      "type": "text",
-      "data": "This content fills the remaining space"
-    }
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverFillRemaining",
+        "hasScrollBody": false,
+        "child": {
+          "type": "center",
+          "child": {
+            "type": "text",
+            "data": "This content fills the remaining space"
+          }
+        }
+      }
+    ]
   }
 };
 export const sliverFillRemainingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;

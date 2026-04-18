@@ -5,22 +5,30 @@ description: "Documentation for SliverVisibility"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const sliverVisibilityPreviewJson = {
-  "type": "sliverVisibility",
-  "visible": false,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "container",
-      "height": 180,
-      "color": "warning",
-      "child": {
-        "type": "center",
-        "child": {
-          "type": "text",
-          "data": "This sliver is hidden"
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverVisibility",
+        "visible": false,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "container",
+            "height": 180,
+            "color": "warning",
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "This sliver is hidden"
+              }
+            }
+          }
         }
       }
-    }
+    ]
   }
 };
 export const sliverVisibilityPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;

@@ -5,26 +5,34 @@ description: "Documentation for SliverPadding"
 
 export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
 export const sliverPaddingPreviewJson = {
-  "type": "sliverPadding",
-  "padding": 16,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "container",
-      "height": 150,
-      "color": "#4CAF50",
-      "child": {
-        "type": "center",
-        "child": {
-          "type": "text",
-          "data": "I am a Box inside a SliverPadding!",
-          "style": {
-            "color": "#FFFFFF",
-            "fontWeight": "bold"
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverPadding",
+        "padding": 16,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "container",
+            "height": 150,
+            "color": "#4CAF50",
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "I am a Box inside a SliverPadding!",
+                "style": {
+                  "color": "#FFFFFF",
+                  "fontWeight": "bold"
+                }
+              }
+            }
           }
         }
       }
-    }
+    ]
   }
 };
 export const sliverPaddingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
