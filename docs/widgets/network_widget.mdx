@@ -3,7 +3,8 @@ title: "NetworkWidget"
 description: "Documentation for NetworkWidget"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const networkWidgetPreviewJson = {
   "type": "networkWidget",
   "request": {
@@ -14,7 +15,7 @@ export const networkWidgetPreviewJson = {
     }
   }
 };
-export const networkWidgetPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const networkWidgetPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac NetworkWidget allows you to build a widget that makes a network request and renders a widget based on the response using JSON.
 
@@ -62,7 +63,8 @@ StacNetworkWidget(
         id="stac"
         src={networkWidgetPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

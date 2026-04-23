@@ -3,7 +3,8 @@ title: "InkWell"
 description: "Documentation for InkWell"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const inkWellPreviewJson = {
   "type": "inkWell",
   "child": {
@@ -33,8 +34,7 @@ export const inkWellPreviewJson = {
   },
   "onTap": {}
 };
-export const inkWellPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
-
+export const inkWellPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 **Stac InkWell** allows you to build the Flutter `InkWell` widget using JSON.  
 To learn more about the `InkWell` widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/InkWell-class.html).
 
@@ -139,7 +139,8 @@ StacInkWell(
         id="stac"
         src={inkWellPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

@@ -3,7 +3,8 @@ title: "AppBar"
 description: "Documentation for AppBar"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const appBarPreviewJson = {
   "type": "appBar",
   "title": {
@@ -29,7 +30,7 @@ export const appBarPreviewJson = {
     }
   ]
 };
-export const appBarPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const appBarPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac AppBar allows you to build a Flutter app bar widget using JSON.
 To know more about the app bar widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/AppBar-class.html).
@@ -117,7 +118,8 @@ StacAppBar(
         id="stac"
         src={appBarPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

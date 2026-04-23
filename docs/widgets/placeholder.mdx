@@ -3,7 +3,8 @@ title: "Placeholder"
 description: "Documentation for Placeholder"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const placeholderPreviewJson = {
   "type": "placeholder",
   "color": "#455A64",
@@ -11,7 +12,7 @@ export const placeholderPreviewJson = {
   "fallbackWidth": 400,
   "fallbackHeight": 400
 };
-export const placeholderPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const placeholderPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac `Placeholder` widget allows you to build the Flutter Placeholder widget using JSON.
 is used to draw a box that serves as a placeholder in your Flutter UI. It is typically used to represent areas where widgets are yet to be added or for debugging layout constraints.
@@ -66,7 +67,8 @@ StacPlaceholder(
         id="stac"
         src={placeholderPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

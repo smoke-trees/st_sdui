@@ -3,7 +3,8 @@ title: "Row"
 description: "Documentation for Row"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const rowPreviewJson = {
   "type": "row",
   "mainAxisAlignment": "center",
@@ -27,7 +28,7 @@ export const rowPreviewJson = {
     }
   ]
 };
-export const rowPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const rowPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac Row allows you to build a Flutter Row widget using JSON.
 To know more about the row widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Row-class.html).
@@ -108,7 +109,8 @@ StacRow(
         id="stac"
         src={rowPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

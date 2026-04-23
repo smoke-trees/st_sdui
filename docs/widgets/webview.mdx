@@ -3,12 +3,13 @@ title: "WebView"
 description: "Documentation for WebView"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const webviewPreviewJson = {
   "type": "webView",
   "url": "https://github.com/StacDev/stac"
 };
-export const webviewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const webviewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac WebView allows you to display WebView widget using JSON in your app. It is based on the [webview_flutter](https://pub.dev/packages/webview_flutter) plugin.
 
@@ -81,7 +82,8 @@ StacWebView(
         id="stac"
         src={webviewPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

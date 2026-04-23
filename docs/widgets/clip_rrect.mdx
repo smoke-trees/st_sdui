@@ -3,7 +3,8 @@ title: "ClipRRect"
 description: "Documentation for ClipRRect"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const clipRrectPreviewJson = {
   "type": "clipRRect",
   "borderRadius": 8,
@@ -15,7 +16,7 @@ export const clipRrectPreviewJson = {
     "width": 100
   }
 };
-export const clipRrectPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const clipRrectPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The `ClipRRect` widget in Stac allows you to clip its child using rounded rectangles. This is useful when you want to create UI elements with rounded corners.
 
@@ -60,7 +61,8 @@ StacClipRRect(
         id="stac"
         src={clipRrectPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

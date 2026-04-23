@@ -3,7 +3,8 @@ title: "Container"
 description: "Documentation for Container"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const containerPreviewJson = {
   "type": "container",
   "alignment": "center",
@@ -33,7 +34,7 @@ export const containerPreviewJson = {
     }
   }
 };
-export const containerPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const containerPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac Container allows you to build a Flutter Container widget using JSON. 
 To know more about the container widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Container-class.html).
@@ -132,7 +133,8 @@ StacContainer(
         id="stac"
         src={containerPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

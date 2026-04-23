@@ -3,7 +3,8 @@ title: "Card"
 description: "Documentation for Card"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const cardPreviewJson = {
   "type": "card",
   "color": "#FFFFFF",
@@ -28,7 +29,7 @@ export const cardPreviewJson = {
   },
   "semanticContainer": true
 };
-export const cardPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const cardPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac Card allows you to build a Flutter Card widget using JSON.
 To know more about the Card widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/Card-class.html).
@@ -105,7 +106,8 @@ StacCard(
         id="stac"
         src={cardPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

@@ -3,7 +3,8 @@ title: "SliverToBoxAdapter"
 description: "A sliver that contains a single box widget."
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const sliverToBoxAdapterPreviewJson = {
   "type": "sliverPadding",
   "padding": 16,
@@ -27,7 +28,7 @@ export const sliverToBoxAdapterPreviewJson = {
     }
   }
 };
-export const sliverToBoxAdapterPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const sliverToBoxAdapterPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac SliverToBoxAdapter allows you to build a Flutter sliver-to-box-adapter widget using JSON. It creates a sliver that contains a single box widget.
 To know more about the sliver-to-box-adapter widget in Flutter, refer to
@@ -98,7 +99,8 @@ StacSliverPadding(
         id="stac"
         src={sliverToBoxAdapterPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

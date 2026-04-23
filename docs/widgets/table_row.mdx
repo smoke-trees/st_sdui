@@ -3,7 +3,8 @@ title: "TableRow"
 description: "Documentation for TableRow"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const tableRowPreviewJson = {
   "type": "tableRow",
   "children": [
@@ -54,7 +55,7 @@ export const tableRowPreviewJson = {
     }
   ]
 };
-export const tableRowPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const tableRowPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 StacTableRow allows you to define the Flutter TableRow widget using JSON.
 To know more about the TableRow widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/TableRow-class.html).
@@ -162,7 +163,8 @@ StacTableRow(
         id="stac"
         src={tableRowPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

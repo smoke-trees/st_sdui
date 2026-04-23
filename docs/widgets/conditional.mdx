@@ -3,7 +3,8 @@ title: "Conditional"
 description: "Documentation for Conditional"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const conditionalPreviewJson = {
   "type": "conditional",
   "condition": "user.isLoggedIn == true",
@@ -16,7 +17,7 @@ export const conditionalPreviewJson = {
     "data": "Please sign in"
   }
 };
-export const conditionalPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const conditionalPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac Conditional allows you to conditionally render widgets based on a boolean expression. It evaluates the condition at runtime and renders either the `ifTrue` or `ifFalse` widget.
 
@@ -66,7 +67,8 @@ StacConditional(
         id="stac"
         src={conditionalPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

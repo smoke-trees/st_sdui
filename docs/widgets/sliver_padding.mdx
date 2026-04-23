@@ -3,7 +3,8 @@ title: "SliverPadding"
 description: "Documentation for SliverPadding"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const sliverPaddingPreviewJson = {
   "type": "scaffold",
   "body": {
@@ -35,7 +36,7 @@ export const sliverPaddingPreviewJson = {
     ]
   }
 };
-export const sliverPaddingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const sliverPaddingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac SliverPadding allows you to inset a sliver widget by a given padding using JSON. It is typically used inside a `CustomScrollView`.
 To know more about the sliver padding widget in Flutter, refer to
@@ -107,7 +108,8 @@ StacSliverPadding(
         id="stac"
         src={sliverPaddingPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

@@ -3,7 +3,8 @@ title: "TextFormField"
 description: "Documentation for TextFormField"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const textFormFieldPreviewJson = {
   "type": "textFormField",
   "id": "email",
@@ -30,7 +31,7 @@ export const textFormFieldPreviewJson = {
     }
   }
 };
-export const textFormFieldPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const textFormFieldPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac TextFormField allows you to build a Flutter TextFormField widget using JSON.
 To know more about the TextFormField widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/TextFormField-class.html).
@@ -138,7 +139,8 @@ StacTextFormField(
         id="stac"
         src={textFormFieldPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

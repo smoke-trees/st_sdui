@@ -3,7 +3,8 @@ title: "PageView"
 description: "Documentation for PageView"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const pageViewPreviewJson = {
   "type": "pageView",
   "children": [
@@ -54,7 +55,7 @@ export const pageViewPreviewJson = {
     }
   ]
 };
-export const pageViewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const pageViewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac PageView allows you to build a Flutter PageView widget using JSON.
 To know more about the PageView widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/PageView-class.html).
@@ -180,7 +181,8 @@ StacPageView(
         id="stac"
         src={pageViewPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

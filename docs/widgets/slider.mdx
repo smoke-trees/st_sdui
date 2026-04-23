@@ -3,7 +3,8 @@ title: "Slider"
 description: "Documentation for Slider"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const sliderPreviewJson = {
   "type": "scaffold",
   "appBar": {
@@ -28,7 +29,7 @@ export const sliderPreviewJson = {
     }
   }
 };
-export const sliderPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const sliderPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac Slider allows you to build a Flutter Slider widget using JSON. 
 To know more about the Slider widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/Slider-class.html).
@@ -118,7 +119,8 @@ StacScaffold(
         id="stac"
         src={sliderPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

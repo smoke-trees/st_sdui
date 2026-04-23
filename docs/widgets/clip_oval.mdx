@@ -3,7 +3,8 @@ title: "ClipOval"
 description: "Documentation for ClipOval"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const clipOvalPreviewJson = {
   "type": "clipOval",
   "clipBehavior": "antiAlias",
@@ -15,7 +16,7 @@ export const clipOvalPreviewJson = {
     "fit": "cover"
   }
 };
-export const clipOvalPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const clipOvalPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 Stac ClipOval allows you to build the Flutter ClipOval widget using JSON. It clips its child using an oval shape, which is useful for creating circular or oval UI elements.
 To know more about the ClipOval widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/ClipOval-class.html).
@@ -68,7 +69,8 @@ StacClipOval(
         id="stac"
         src={clipOvalPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

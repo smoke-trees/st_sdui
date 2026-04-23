@@ -3,7 +3,8 @@ title: "Table"
 description: "Documentation for Table"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const tablePreviewJson = {
   "type": "table",
   "columnWidths": {
@@ -129,7 +130,7 @@ export const tablePreviewJson = {
     }
   ]
 };
-export const tablePreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const tablePreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 StacTable allows you to build the Flutter Table widget using JSON.
 To know more about the Table widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/Table-class.html).
@@ -355,7 +356,8 @@ StacTable(
         id="stac"
         src={tablePreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

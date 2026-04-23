@@ -3,7 +3,8 @@ title: "Dynamic View"
 description: "Documentation for Dynamic View"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const dynamicViewPreviewJson = {
   "type": "dynamicView",
   "request": {
@@ -15,7 +16,7 @@ export const dynamicViewPreviewJson = {
     "data": "Hello, {{name}}!"
   }
 };
-export const dynamicViewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const dynamicViewPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 ## Overview
 
@@ -83,7 +84,8 @@ StacDynamicView(
         id="stac"
         src={dynamicViewPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

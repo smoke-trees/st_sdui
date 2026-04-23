@@ -3,7 +3,8 @@ title: "Image"
 description: "Documentation for Image"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const imagePreviewJson = {
   "type": "image",
   "src": "assets/logo.png",
@@ -12,7 +13,7 @@ export const imagePreviewJson = {
   "height": 100,
   "fit": "cover"
 };
-export const imagePreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const imagePreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The `Image` widget allows you to display an image in your Flutter app using JSON. It supports images from multiple sources, including assets, files, and network URLs, and provides customization options such as alignment, color, width, height, and fit.
 
@@ -73,7 +74,8 @@ const StacImage.asset(
         id="stac"
         src={imagePreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

@@ -3,7 +3,8 @@ title: "CircularProgressIndicator"
 description: "Documentation for CircularProgressIndicator"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const circularProgressIndicatorPreviewJson = {
   "type": "circularProgressIndicator",
   "color": "#541204",
@@ -11,7 +12,7 @@ export const circularProgressIndicatorPreviewJson = {
   "backgroundColor": "#FFD700",
   "strokeCap": "round"
 };
-export const circularProgressIndicatorPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const circularProgressIndicatorPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac CircularProgressIndicator allows you to build a Flutter CircularProgressIndicator widget using JSON. 
 To know more about the CircularProgressIndicator widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/material/CircularProgressIndicator-class.html).
@@ -63,7 +64,8 @@ StacCircularProgressIndicator(
         id="stac"
         src={circularProgressIndicatorPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

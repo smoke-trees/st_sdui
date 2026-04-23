@@ -3,7 +3,8 @@ title: "Limited Box"
 description: "Documentation for Limited Box"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const limitedBoxPreviewJson = {
   "type": "limitedBox",
   "child": {
@@ -13,7 +14,7 @@ export const limitedBoxPreviewJson = {
     "color": "#FF0000"
   }
 };
-export const limitedBoxPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const limitedBoxPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 Stac LimitedBox allows you to build the Flutter LimitedBox widget using JSON.
 To know more about the LimitedBox widget in Flutter, refer to the [official documentation](https://api.flutter.dev/flutter/widgets/LimitedBox-class.html).
@@ -67,7 +68,8 @@ StacLimitedBox(
         id="stac"
         src={limitedBoxPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

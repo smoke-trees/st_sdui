@@ -3,7 +3,8 @@ title: "BackdropFilter"
 description: "Documentation for BackdropFilter"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const backdropFilterPreviewJson = {
   "type": "clipRRect",
   "borderRadius": {
@@ -44,7 +45,7 @@ export const backdropFilterPreviewJson = {
     }
   }
 };
-export const backdropFilterPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const backdropFilterPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 Stac BackdropFilter allows you to build the Flutter BackdropFilter widget using JSON. This widget applies a filter to the existing painted content and then paints its child. It's commonly used to create frosted glass effects, blurs, and other visual effects.
 To know more about the BackdropFilter widget in Flutter, refer to the official documentation for [Backdrop Filter](https://api.flutter.dev/flutter/widgets/BackdropFilter-class.html) and [Image Filter](https://api.flutter.dev/flutter/dart-ui/ImageFilter-class.html).
@@ -192,7 +193,8 @@ StacClipRRect(
         id="stac"
         src={backdropFilterPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

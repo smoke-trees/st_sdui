@@ -3,7 +3,8 @@ title: "SliverFillRemaining"
 description: "Documentation for SliverFillRemaining"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const sliverFillRemainingPreviewJson = {
   "type": "scaffold",
   "body": {
@@ -23,7 +24,7 @@ export const sliverFillRemainingPreviewJson = {
     ]
   }
 };
-export const sliverFillRemainingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const sliverFillRemainingPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac SliverFillRemaining allows you to build a Flutter `SliverFillRemaining`
 widget using JSON.
@@ -86,7 +87,8 @@ const StacSliverFillRemaining(
         id="stac"
         src={sliverFillRemainingPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;

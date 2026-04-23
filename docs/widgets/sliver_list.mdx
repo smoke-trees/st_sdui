@@ -3,7 +3,8 @@ title: "SliverList"
 description: "Documentation for SliverList"
 ---
 
-export const PLAYGROUND_BASE_URL = "https://playground.stac.dev";
+import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
+
 export const sliverListPreviewJson = {
   "type": "scaffold",
   "body": {
@@ -53,7 +54,7 @@ export const sliverListPreviewJson = {
     ]
   }
 };
-export const sliverListPreviewSrc = `${PLAYGROUND_BASE_URL}/embed?showTopBar=false&showEditor=false`;
+export const sliverListPreviewSrc = `${PLAYGROUND_BASE_URL}/embed`;
 
 The Stac SliverList allows you to build a Flutter sliver list widget using JSON.
 It displays its children in a linear, scrollable list within a sliver context.
@@ -173,7 +174,8 @@ const StacSliverList(
         id="stac"
         src={sliverListPreviewSrc}
         title="Stac Playground"
-        className="w-full h-[640px] rounded-xl border-0"
+        className="w-full rounded-xl border-0"
+        style={{ height: "640px" }}
         loading="lazy"
         onLoad={(event) => {
           const iframe = event.currentTarget;
