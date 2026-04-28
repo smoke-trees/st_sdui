@@ -68,14 +68,22 @@ const StacSliverFillRemaining(
 
 ```json
 {
-  "type": "sliverFillRemaining",
-  "hasScrollBody": false,
-  "child": {
-    "type": "center",
-    "child": {
-      "type": "text",
-      "data": "This content fills the remaining space"
-    }
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverFillRemaining",
+        "hasScrollBody": false,
+        "child": {
+          "type": "center",
+          "child": {
+            "type": "text",
+            "data": "This content fills the remaining space"
+          }
+        }
+      }
+    ]
   }
 }
 ```

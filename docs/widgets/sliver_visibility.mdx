@@ -81,22 +81,30 @@ StacSliverVisibility(
 
 ```json
 {
-  "type": "sliverVisibility",
-  "visible": false,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "container",
-      "height": 180,
-      "color": "warning",
-      "child": {
-        "type": "center",
-        "child": {
-          "type": "text",
-          "data": "This sliver is hidden"
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverVisibility",
+        "visible": false,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "container",
+            "height": 180,
+            "color": "warning",
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "This sliver is hidden"
+              }
+            }
+          }
         }
       }
-    }
+    ]
   }
 }
 ```

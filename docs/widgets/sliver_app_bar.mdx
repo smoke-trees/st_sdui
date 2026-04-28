@@ -25,7 +25,6 @@ export const sliverAppBarPreviewJson = {
           },
           "onPressed": {}
         },
-        "backgroundColor": "primary",
         "actions": [
           {
             "type": "iconButton",
@@ -96,7 +95,6 @@ StacSliverAppBar(
     icon: StacIcon(iconType: 'material', icon: 'menu'),
     onPressed: StacNoneAction(),
   ),
-  backgroundColor: 'primary',
   actions: [
     StacIconButton(
       icon: StacIcon(iconType: 'cupertino', icon: 'heart_solid'),
@@ -111,32 +109,39 @@ StacSliverAppBar(
 
 ```json
 {
-  "type": "sliverAppBar",
-  "title": {
-    "type": "text",
-    "data": "SliverAppBar"
-  },
-  "leading": {
-    "type": "iconButton",
-    "icon": {
-      "type": "icon",
-      "iconType": "material",
-      "icon": "menu"
-    },
-    "onPressed": {}
-  },
-  "backgroundColor": "primary",
-  "actions": [
-    {
-      "type": "iconButton",
-      "icon": {
-        "type": "icon",
-        "iconType": "cupertino",
-        "icon": "heart_solid"
-      },
-      "onPressed": {}
-    }
-  ]
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverAppBar",
+        "title": {
+          "type": "text",
+          "data": "SliverAppBar"
+        },
+        "leading": {
+          "type": "iconButton",
+          "icon": {
+            "type": "icon",
+            "iconType": "material",
+            "icon": "menu"
+          },
+          "onPressed": {}
+        },
+        "actions": [
+          {
+            "type": "iconButton",
+            "icon": {
+              "type": "icon",
+              "iconType": "cupertino",
+              "icon": "heart_solid"
+            },
+            "onPressed": {}
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 

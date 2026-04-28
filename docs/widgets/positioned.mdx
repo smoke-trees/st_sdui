@@ -67,15 +67,20 @@ StacPositioned(
 
 ```json
 {
-  "type": "positioned",
-  "left": 10,
-  "top": 20,
-  "right": 30,
-  "bottom": 40,
-  "child": {
-    "type": "text",
-    "data": "Hello, World!"
-  }
+  "type": "stack",
+  "children": [
+    {
+      "type": "positioned",
+      "left": 10,
+      "top": 20,
+      "right": 30,
+      "bottom": 40,
+      "child": {
+        "type": "text",
+        "data": "Hello, World!"
+      }
+    }
+  ]
 }
 ```
 

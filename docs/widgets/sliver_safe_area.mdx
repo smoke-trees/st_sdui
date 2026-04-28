@@ -60,14 +60,22 @@ StacSliverSafeArea(
 
 ```json
 {
-  "type": "sliverSafeArea",
-  "top": true,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "text",
-      "data": "Hello World"
-    }
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverSafeArea",
+        "top": true,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "text",
+            "data": "Hello World"
+          }
+        }
+      }
+    ]
   }
 }
 ```

@@ -74,22 +74,30 @@ StacSliverOpacity(
 
 ```json
 {
-  "type": "sliverOpacity",
-  "opacity": 0.5,
-  "sliver": {
-    "type": "sliverToBoxAdapter",
-    "child": {
-      "type": "container",
-      "height": 200,
-      "color": "red",
-      "child": {
-        "type": "center",
-        "child": {
-          "type": "text",
-          "data": "I am a faded sliver"
+  "type": "scaffold",
+  "body": {
+    "type": "customScrollView",
+    "slivers": [
+      {
+        "type": "sliverOpacity",
+        "opacity": 0.5,
+        "sliver": {
+          "type": "sliverToBoxAdapter",
+          "child": {
+            "type": "container",
+            "height": 200,
+            "color": "red",
+            "child": {
+              "type": "center",
+              "child": {
+                "type": "text",
+                "data": "I am a faded sliver"
+              }
+            }
+          }
         }
       }
-    }
+    ]
   }
 }
 ```

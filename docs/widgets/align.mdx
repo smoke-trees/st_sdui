@@ -7,7 +7,6 @@ import { PLAYGROUND_BASE_URL } from "/snippets/playground_base.mdx";
 
 export const alignPreviewJson = {
   "type": "align",
-  "alignment": "topEnd",
   "child": {
     "type": "container",
     "color": "#FC5632",
@@ -48,10 +47,8 @@ To know more about the align widget in Flutter, refer to the [official documenta
 
 ```dart
 StacAlign(
-  alignment: StacAlignment.topEnd,
   child: StacContainer(
     color: '#FC5632',
-    clipBehavior: StacClip.hardEdge,
     height: 250,
     width: 200,
     child: StacAlign(
@@ -69,16 +66,16 @@ StacAlign(
 ```
 
   </Tab>
+
   <Tab title="JSON">
+
 
 ```json
 {
   "type": "align",
-  "alignment": "topEnd",
   "child": {
     "type": "container",
     "color": "#FC5632",
-    "clipBehavior": "hardEdge",
     "height": 250,
     "width": 200,
     "child": {
@@ -98,6 +95,7 @@ StacAlign(
 ```
 
   </Tab>
+
   <Tab title="Preview">
     <Frame>
       <iframe
