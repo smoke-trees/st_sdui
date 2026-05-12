@@ -18,6 +18,20 @@ void main() {
       expect(value.selection.baseOffset, value.text.length);
     });
 
+    test('anchors rules so empty-substring matches are rejected', () {
+      final formatter = InputFormatterType.mask.format(
+        r'\d*',
+        mask: '##/##',
+      );
+
+      final value = formatter.formatEditUpdate(
+        TextEditingValue.empty,
+        const TextEditingValue(text: 'a1b2'),
+      );
+
+      expect(value.text, '12');
+    });
+
     test('returns the new value when mask is empty', () {
       final formatter = InputFormatterType.mask.format(r'\d');
       const value = TextEditingValue(text: '123');

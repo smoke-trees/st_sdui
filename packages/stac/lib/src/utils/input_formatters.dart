@@ -27,7 +27,7 @@ enum InputFormatterType {
 
 class _StacMaskInputFormatter extends TextInputFormatter {
   _StacMaskInputFormatter({required this.mask, required String rule})
-    : _allowed = RegExp(rule.isEmpty ? r'.' : rule);
+    : _allowed = RegExp('^${rule.isEmpty ? r'.' : rule}\$');
 
   final String mask;
   final RegExp _allowed;
