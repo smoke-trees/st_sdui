@@ -19,10 +19,7 @@ void main() {
     });
 
     test('anchors rules so empty-substring matches are rejected', () {
-      final formatter = InputFormatterType.mask.format(
-        r'\d*',
-        mask: '##/##',
-      );
+      final formatter = InputFormatterType.mask.format(r'\d*', mask: '##/##');
 
       final value = formatter.formatEditUpdate(
         TextEditingValue.empty,
