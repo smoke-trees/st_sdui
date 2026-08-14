@@ -102,7 +102,9 @@ class StacAppTheme {
       return null;
     }
 
-    final themePayload = _themeJsonDynamicToMap(rawData['stacJson']);
+    final themePayload = _themeJsonDynamicToMap(
+      rawData['result'][0]['themeJson'],
+    );
     if (themePayload == null) {
       return null;
     }

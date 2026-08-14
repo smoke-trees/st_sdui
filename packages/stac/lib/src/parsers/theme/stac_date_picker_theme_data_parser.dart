@@ -33,9 +33,7 @@ extension StacDatePickerThemeDataParser on StacDatePickerThemeData {
       dayOverlayColor: WidgetStatePropertyAll(
         dayOverlayColor?.toColor(context),
       ),
-      dayShape: WidgetStatePropertyAll(
-        dayShape?.parse(context) as OutlinedBorder,
-      ),
+      dayShape: WidgetStatePropertyAll(dayShape?.parse(context)),
       todayForegroundColor: WidgetStatePropertyAll(
         todayForegroundColor?.toColor(context),
       ),

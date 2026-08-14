@@ -55,7 +55,10 @@ class StacNavigateActionParser extends StacActionParser<StacNavigateAction> {
       case NavigationStyle.push:
         return Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => widget ?? const SizedBox()),
+          MaterialPageRoute(
+            builder: (_) => widget ?? const SizedBox(),
+            settings: RouteSettings(arguments: arguments), // was dropped before
+          ),
         );
 
       case NavigationStyle.pop:
@@ -65,14 +68,20 @@ class StacNavigateActionParser extends StacActionParser<StacNavigateAction> {
       case NavigationStyle.pushReplacement:
         return Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => widget ?? const SizedBox()),
+          MaterialPageRoute(
+            builder: (_) => widget ?? const SizedBox(),
+            settings: RouteSettings(arguments: arguments), // was dropped before
+          ),
           result: result,
         );
 
       case NavigationStyle.pushAndRemoveAll:
         return Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => widget ?? const SizedBox()),
+          MaterialPageRoute(
+            builder: (_) => widget ?? const SizedBox(),
+            settings: RouteSettings(arguments: arguments), // was dropped before
+          ),
           ModalRoute.withName('/'),
         );
 

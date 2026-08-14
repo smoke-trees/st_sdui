@@ -179,7 +179,6 @@ class Stac extends StatelessWidget {
   /// }
   /// ```
   static Future<void> initialize({
-    StacOptions? options,
     List<StacParser> parsers = const [],
     List<StacActionParser> actionParsers = const [],
     Dio? dio,
@@ -188,9 +187,9 @@ class Stac extends StatelessWidget {
     bool logStackTraces = true,
     StacErrorWidgetBuilder? errorWidgetBuilder,
     StacCacheConfig? cacheConfig,
+    required String baseUrl,
   }) async {
     return StacService.initialize(
-      options: options,
       parsers: parsers,
       actionParsers: actionParsers,
       dio: dio,
@@ -199,6 +198,7 @@ class Stac extends StatelessWidget {
       logStackTraces: logStackTraces,
       errorWidgetBuilder: errorWidgetBuilder,
       cacheConfig: cacheConfig,
+      baseUrl: baseUrl,
     );
   }
 
@@ -329,11 +329,6 @@ class _StacView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = StacService.options;
-    if (options == null) {
-      throw Exception('StacOptions is not set');
-    }
-
     return FutureBuilder<Response?>(
       future: StacCloud.fetchScreen(routeName: routeName),
       builder: (context, snapshot) {
@@ -344,13 +339,57 @@ class _StacView extends StatelessWidget {
           return errorWidget ?? const SizedBox();
         }
         if (snapshot.hasData) {
-          final jsonString = snapshot.data!.data['stacJson'];
+          var jsonString =
+              snapshot.data!.data['result'][0]['screenJson'] as String;
+
+          // Substitute {{key}} placeholders with values from the arguments
+          // this screen was navigated to with (see StacNavigator/navigate
+          // action's `arguments` field). Runs on the raw JSON string before
+          // decoding, so it works for any declarative Stac screen without
+          // needing a custom parser to read ModalRoute manually.
+          final navArgs = ModalRoute.of(context)?.settings.arguments;
+          if (navArgs is Map) {
+            jsonString = _substituteVariables(jsonString, navArgs);
+          }
+
           return StacService.fromJson(jsonDecode(jsonString), context) ??
               const SizedBox();
         }
         return const SizedBox();
       },
     );
+  }
+
+  static final _wholeValuePattern = RegExp(r'"\{\{(\w+)\}\}"');
+  static final _placeholderPattern = RegExp(r'\{\{(\w+)\}\}');
+
+  static String _substituteVariables(String jsonString, Map args) {
+    // Pass 1: the placeholder IS the entire field value, e.g. "count":
+    // "{{count}}" — preserve the argument's real JSON type (int stays a
+    // number, bool stays a boolean, etc.) instead of forcing it to a string.
+    var result = jsonString.replaceAllMapped(_wholeValuePattern, (match) {
+      final key = match.group(1)!;
+      if (!args.containsKey(key)) return match.group(0)!;
+      return jsonEncode(args[key]); // 123 -> 123, true -> true, "x" -> "x"
+    });
+
+    // Pass 2: anything left over is embedded inside a larger string, e.g.
+    // "Product ID: {{productId}}" — this can only ever become text, no
+    // matter what type the argument actually is.
+    result = result.replaceAllMapped(_placeholderPattern, (match) {
+      final key = match.group(1)!;
+      if (!args.containsKey(key)) {
+        return match.group(0)!; // leave unmatched as-is
+      }
+      final value = args[key];
+      final encoded = jsonEncode(value.toString());
+      return encoded.substring(
+        1,
+        encoded.length - 1,
+      ); // strip the wrapping quotes
+    });
+
+    return result;
   }
 }
 

@@ -18,6 +18,7 @@ import 'package:stac/src/parsers/widgets/stac_inkwell/stac_inkwell_parser.dart';
 import 'package:stac/src/parsers/widgets/stac_row/stac_row_parser.dart';
 import 'package:stac/src/parsers/widgets/stac_text/stac_text_parser.dart';
 import 'package:stac/src/parsers/widgets/stac_tool_tip/stac_tool_tip_parser.dart';
+import 'package:stac/src/services/stac_cloud.dart';
 import 'package:stac/src/services/stac_network_service.dart';
 import 'package:stac/src/utils/variable_resolver.dart';
 import 'package:stac_core/stac_core.dart';
@@ -174,7 +175,6 @@ class StacService {
   static StacCacheConfig get defaultCacheConfig => _defaultCacheConfig;
 
   static Future<void> initialize({
-    StacOptions? options,
     List<StacParser> parsers = const [],
     List<StacActionParser> actionParsers = const [],
     Dio? dio,
@@ -183,11 +183,14 @@ class StacService {
     bool logStackTraces = true,
     StacErrorWidgetBuilder? errorWidgetBuilder,
     StacCacheConfig? cacheConfig,
+    required String baseUrl,
   }) async {
-    _options = options;
     if (cacheConfig != null) {
       _defaultCacheConfig = cacheConfig;
     }
+
+    StacCloud.setBaseUrl(baseUrl);
+
     _parsers.addAll(parsers);
     _actionParsers.addAll(actionParsers);
     StacRegistry.instance.registerAll(_parsers, override);

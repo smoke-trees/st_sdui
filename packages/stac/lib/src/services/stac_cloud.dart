@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:stac/src/framework/stac_service.dart';
 import 'package:stac/src/models/stac_artifact_type.dart';
-import 'package:stac/src/models/stac_cache_config.dart';
 import 'package:stac/src/models/stac_cache.dart';
+import 'package:stac/src/models/stac_cache_config.dart';
 import 'package:stac/src/services/stac_cache_service.dart';
 import 'package:stac_logger/stac_logger.dart';
 
@@ -20,15 +22,20 @@ class StacCloud {
     ),
   );
 
-  static const String _baseUrl = 'https://api.stac.dev';
+  static String _baseUrl = '';
+
+  /// Sets the base URL for Stac Cloud API requests.
+  static void setBaseUrl(String url) {
+    _baseUrl = url;
+  }
 
   /// Gets the fetch URL for a given artifact type.
   static String _getFetchUrl(StacArtifactType artifactType) {
     switch (artifactType) {
       case StacArtifactType.screen:
-        return '$_baseUrl/screens';
+        return '$_baseUrl/app-screens';
       case StacArtifactType.theme:
-        return '$_baseUrl/themes';
+        return '$_baseUrl/app-themes';
     }
   }
 
@@ -56,11 +63,6 @@ class StacCloud {
     required StacArtifactType artifactType,
     required String artifactName,
   }) async {
-    final options = StacService.options;
-    if (options == null) {
-      throw Exception('StacOptions is not set');
-    }
-
     final cacheConfig = StacService.defaultCacheConfig;
 
     // Handle network-only strategy
@@ -241,15 +243,16 @@ class StacCloud {
     required StacArtifactType artifactType,
     required String artifactName,
   }) {
-    final options = StacService.options!;
     final fetchUrl = _getFetchUrl(artifactType);
     final queryParamName = _getQueryParamName(artifactType);
+
+    log('queryParamName $queryParamName fetch $fetchUrl');
 
     return _dio.get(
       fetchUrl,
       queryParameters: <String, dynamic>{
-        'projectId': options.projectId,
         queryParamName: artifactName,
+        "isLatest": true,
       },
     );
   }
@@ -266,10 +269,14 @@ class StacCloud {
     );
 
     // Save to cache if enabled and response is valid
-    if (saveToCache && response.data != null) {
-      final version = response.data['version'] as int?;
-      final stacJson = response.data['stacJson'] as String?;
-      final name = response.data['name'] as String?;
+    if (saveToCache &&
+        response.data != null &&
+        response.data['result'] != null &&
+        response.data['result'] != null) {
+      final result = response.data['result'][0];
+      final version = result['version'] as int?;
+      final stacJson = result['stacJson'] as String?;
+      final name = result['name'] as String?;
 
       if (version != null && stacJson != null && name != null) {
         await StacCacheService.saveArtifact(
@@ -320,10 +327,13 @@ class StacCloud {
         artifactName: artifactName,
       );
 
-      if (response.data != null) {
-        final serverVersion = response.data['version'] as int?;
-        final serverStacJson = response.data['stacJson'] as String?;
-        final name = response.data['name'] as String?;
+      if (response.data != null &&
+          response.data['result'] != null &&
+          response.data['result'].isNotEmpty) {
+        final result = response.data['result'][0];
+        final serverVersion = result['version'] as int?;
+        final serverStacJson = result['stacJson'] as String?;
+        final name = result['name'] as String?;
 
         // Only update if server has newer version
         if (serverVersion != null &&

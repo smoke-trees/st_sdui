@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:stac/src/utils/color_type.dart';
 
+class StacColorRegistry {
+  static final Map<String, Color> _colors = {};
+
+  /// Register your own named colors, e.g. brandPrimary -> Color(0xFF123456)
+  static void register(String name, Color color) => _colors[name] = color;
+  static void registerAll(Map<String, Color> colors) => _colors.addAll(colors);
+  static Color? get(String name) => _colors[name];
+}
+
 const String _hashtag = "#";
 const String _empty = "";
 const String _transparencySeparator = "@";
@@ -32,6 +41,7 @@ extension ColorExt on String? {
     } else {
       // Try theme color first, then named color
       parsedColor = _parseThemeColor(colorString, context);
+      parsedColor ??= StacColorRegistry.get(colorString);
       parsedColor ??= _parseNameColor(colorString);
     }
 
