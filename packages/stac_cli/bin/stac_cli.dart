@@ -18,6 +18,8 @@ import 'package:stac_cli/src/utils/console_logger.dart';
 import 'package:stac_cli/src/utils/file_utils.dart';
 import 'package:stac_cli/src/version.dart';
 
+import 'stac_watch.dart';
+
 String get version => currentEnvironment == Environment.dev
     ? '$packageVersion-dev'
     : packageVersion;
@@ -67,6 +69,7 @@ void main(List<String> arguments) async {
         ..addCommand(InitCommand())
         ..addCommand(ProjectCommand())
         ..addCommand(BuildCommand())
+        ..addCommand(StacWatchCommand())
         ..addCommand(DeployCommand())
         ..addCommand(SkillsCommand())
         ..addCommand(UpgradeCommand());

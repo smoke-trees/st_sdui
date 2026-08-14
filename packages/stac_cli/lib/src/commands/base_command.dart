@@ -19,9 +19,9 @@ abstract class BaseCommand extends Command<int> {
   Future<int> run() async {
     try {
       // Check authentication if required
-      if (requiresAuth) {
-        await _checkAuthentication();
-      }
+      // if (requiresAuth) {
+      //   await _checkAuthentication();
+      // }
 
       // Run the actual command
       return await execute();

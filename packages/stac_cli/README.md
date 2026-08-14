@@ -23,8 +23,14 @@ stac --version
 stac login
 stac init
 stac build
+stac watch
 stac deploy
 ```
+
+`stac watch` starts the local development server, incrementally rebuilds
+changed screens and themes, and launches the Flutter app. Use `--no-app` to
+run only the watcher. Configure a session with `--device <id>`,
+`--host <address>`, and `--port <port>`.
 
 ## Environment
 

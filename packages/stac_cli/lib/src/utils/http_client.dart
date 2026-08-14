@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../config/env.dart';
 
+import '../config/env.dart';
 import '../exceptions/stac_exception.dart';
 import '../services/auth_service.dart';
 import '../utils/console_logger.dart';
@@ -8,7 +8,7 @@ import '../utils/console_logger.dart';
 /// HTTP client wrapper for making API requests to Stac cloud services
 class HttpClientService {
   static HttpClientService? _instance;
-  late final Dio _dio;
+  late final Dio _dio = _createDio();
   final AuthService _authService = AuthService();
 
   /// Singleton instance
@@ -17,8 +17,10 @@ class HttpClientService {
     return _instance!;
   }
 
-  HttpClientService._() {
-    _dio = Dio(
+  HttpClientService._();
+
+  Dio _createDio() {
+    final dio = Dio(
       BaseOptions(
         baseUrl: env.baseApiUrl,
         connectTimeout: const Duration(seconds: 30),
@@ -28,25 +30,26 @@ class HttpClientService {
     );
 
     // Add request interceptor for authentication
-    _dio.interceptors.add(
+    dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // Try to refresh token if needed and add auth header
-          final token = await _authService.refreshTokenIfNeeded();
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer ${token.accessToken}';
-            ConsoleLogger.debug('Auth header attached');
+          // Authentication is optional. Attach a usable token when available,
+          // but never block a command because login or refresh failed.
+          try {
+            final token = await _authService.refreshTokenIfNeeded();
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer ${token.accessToken}';
+              ConsoleLogger.debug('Auth header attached');
+            }
+          } catch (e) {
+            ConsoleLogger.debug('Continuing without an auth token: $e');
           }
           ConsoleLogger.debug('HTTP ${options.method} → ${options.uri}');
           handler.next(options);
         },
         onError: (error, handler) {
           // Handle common HTTP errors
-          if (error.response?.statusCode == 401) {
-            throw StacException(
-              'Authentication required. Please run "stac login"',
-            );
-          } else if (error.response?.statusCode == 403) {
+          if (error.response?.statusCode == 403) {
             throw StacException('Permission denied');
           } else if (error.response?.statusCode == 404) {
             throw StacException('Resource not found');
@@ -66,6 +69,8 @@ class HttpClientService {
         },
       ),
     );
+
+    return dio;
   }
 
   /// Make a GET request

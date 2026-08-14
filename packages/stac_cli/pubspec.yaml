@@ -19,6 +19,8 @@ dependencies:
   dotenv: ^4.2.0
   cryptography: ^2.9.0
   archive: ^4.0.9
+  crypto: ^3.0.7
+  watcher: ^1.2.1
 
 # Executables that can be run globally
 executables:

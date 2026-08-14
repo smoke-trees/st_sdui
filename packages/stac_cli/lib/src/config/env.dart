@@ -22,17 +22,17 @@ void configureEnvironment(Map<String, String> loadedEnvironment) {
 }
 
 class EnvConfig {
-  final String baseApiUrl;
-  final String googleOAuthClientId;
-  final String? googleOAuthClientSecret;
-  final String firebaseWebApiKey;
+  const EnvConfig();
 
-  const EnvConfig({
-    required this.baseApiUrl,
-    required this.googleOAuthClientId,
-    required this.googleOAuthClientSecret,
-    required this.firebaseWebApiKey,
-  });
+  String get baseApiUrl => _env('STAC_BASE_API_URL', required: true)!;
+
+  String get googleOAuthClientId =>
+      _env('STAC_GOOGLE_CLIENT_ID', required: true)!;
+
+  String? get googleOAuthClientSecret => _env('STAC_GOOGLE_CLIENT_SECRET');
+
+  String get firebaseWebApiKey =>
+      _env('STAC_FIREBASE_API_KEY', required: true)!;
 }
 
 const Map<String, String> _compiledEnvMap = {
@@ -69,11 +69,4 @@ String? _env(String key, {String? defaultValue, bool required = false}) {
   return null;
 }
 
-EnvConfig get env {
-  return EnvConfig(
-    baseApiUrl: _env('STAC_BASE_API_URL', required: true)!,
-    googleOAuthClientId: _env('STAC_GOOGLE_CLIENT_ID', required: true)!,
-    googleOAuthClientSecret: _env('STAC_GOOGLE_CLIENT_SECRET'),
-    firebaseWebApiKey: _env('STAC_FIREBASE_API_KEY', required: true)!,
-  );
-}
+const env = EnvConfig();

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
+import 'package:stac_cli/src/utils/flutter_sdk.dart';
 import 'package:stac_cli/src/utils/string_utils.dart';
 import 'package:stac_core/core/stac_options.dart';
 
@@ -65,7 +66,7 @@ class BuildService {
       ConsoleLogger.debug('Processing: $relativePath');
       try {
         final sourceFile = File(filePath);
-        final analysis = await _analyzeStacFile(sourceFile);
+        final analysis = await _analyzeStacFile(sourceFile, projectDir);
         final stacScreenArtifacts = analysis.screenArtifacts;
         final stacThemeArtifacts = analysis.themeArtifacts;
 
@@ -154,6 +155,42 @@ class BuildService {
         'No @StacScreen or @StacThemeRef annotations found. Add annotations to your screen widgets or themes.',
       );
     }
+  }
+
+  /// Returns the annotated screens and themes declared in [content].
+  List<StacDslArtifact> analyzeFileSource(String content) {
+    return [
+      ..._extractDslArtifacts(content, type: StacDslArtifactType.screen),
+      ..._extractDslArtifacts(content, type: StacDslArtifactType.theme),
+    ];
+  }
+
+  /// Builds one screen or theme and returns the JSON written by a full build.
+  Future<String> buildArtifact({
+    required String projectDir,
+    required String sourceFilePath,
+    required StacDslArtifact artifact,
+  }) async {
+    final json = await _convertCallableToJson(
+      File(sourceFilePath),
+      artifact.callableName,
+      projectDir,
+      isGetter: artifact.isGetter,
+    );
+    if (json == null) {
+      throw BuildException(
+        'No JSON produced for ${artifact.logLabel} "${artifact.artifactName}".',
+      );
+    }
+
+    final cleaned = _cleanJson(json);
+    if (cleaned == null) {
+      throw BuildException(
+        'Empty JSON produced for ${artifact.logLabel} "${artifact.artifactName}".',
+      );
+    }
+
+    return const JsonEncoder.withIndent('  ').convert(cleaned);
   }
 
   /// Find all .dart files in the source directory recursively
@@ -251,7 +288,10 @@ class BuildService {
   }
 
   /// Analyze a Dart file and return annotated screen + theme information
-  Future<_StacFileAnalysis> _analyzeStacFile(File file) async {
+  Future<_StacFileAnalysis> _analyzeStacFile(
+    File file,
+    String projectDir,
+  ) async {
     final screenArtifacts = <StacDslArtifact>[];
     final themeArtifacts = <StacDslArtifact>[];
 
@@ -265,9 +305,10 @@ class BuildService {
         throw BuildException(importError);
       }
 
-      // Use dart analyze command to check if the file is valid Dart code
+      // Prefer the project's FVM-pinned SDK when one is available.
+      final dart = FlutterSdk.resolveDartSync(projectDir) ?? 'dart';
       final analyzeResult = Process.runSync(
-        'dart',
+        dart,
         ['analyze', '--format=json', file.path],
         runInShell: Platform
             .isWindows, // Use shell on Windows for proper PATH resolution
@@ -516,10 +557,11 @@ Future<void> main(List<String> args) async {
     String projectDir,
   ) async {
     try {
-      // Execute Dart file in project context for proper dependency resolution
+      // Execute with the same SDK the Flutter project is pinned to.
+      final dart = FlutterSdk.resolveDartSync(projectDir) ?? 'dart';
       final result =
           await Process.run(
-            'dart',
+            dart,
             ['run', path.basename(scriptFile.path)],
             workingDirectory: projectDir,
             runInShell: Platform
