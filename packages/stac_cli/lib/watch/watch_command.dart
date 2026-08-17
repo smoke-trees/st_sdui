@@ -73,10 +73,13 @@ class WatchCommand {
 
     print('\x1B[34mbuilding initial graph…\x1B[0m');
     await resolver.buildGraph(projectRoot);
+
+    var targets = resolver.allTargets();
+
     print(
-      '\x1B[34mfound ${resolver.allTargets().length} screen/theme entries — building all once\x1B[0m',
+      '\x1B[34mfound ${targets.length} screen/theme entries — building all once\x1B[0m',
     );
-    await _buildAndApply(resolver.allTargets(), triggerReload: false);
+    await _buildAndApply(targets, triggerReload: false);
 
     // Ensure the first app request can be served from the completed build.
     if (spawnApp) await _flutterCtrl!.start(deviceId: deviceId);
@@ -138,6 +141,8 @@ class WatchCommand {
   }) async {
     var anyChanged = false;
     var themeChanged = false;
+
+    ConsoleLogger.info('stac watch buildAndApply started targets: $targets');
 
     for (final target in targets) {
       try {
