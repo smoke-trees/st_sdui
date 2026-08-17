@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:stac_cli/src/utils/console_logger.dart';
 import 'package:watcher/watcher.dart';
 
 import 'build_target_resolver.dart';
@@ -154,6 +155,9 @@ class WatchCommand {
         final subDir = target.type == ArtifactType.screen
             ? 'screens'
             : 'themes';
+        ConsoleLogger.info(
+          'stac watch build started dir: $_buildDir/$subDir/${target.name}.json',
+        );
         final outFile = File('$_buildDir/$subDir/${target.name}.json');
         await outFile.parent.create(recursive: true);
         await outFile.writeAsString(jsonString);
