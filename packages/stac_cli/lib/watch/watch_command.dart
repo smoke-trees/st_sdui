@@ -146,6 +146,9 @@ class WatchCommand {
 
     for (final target in targets) {
       try {
+        ConsoleLogger.info(
+          'stac watch build started dir: $_buildDir/${target.name}.json',
+        );
         final jsonString = await buildOne(target);
         final hash = sha256.convert(utf8.encode(jsonString)).toString();
 
@@ -155,15 +158,18 @@ class WatchCommand {
           sourceFile: target.sourceFile,
           hash: hash,
         );
-        if (!changed) continue;
 
         final subDir = target.type == ArtifactType.screen
             ? 'screens'
             : 'themes';
+        final outFile = File('$_buildDir/$subDir/${target.name}.json');
+        final fileMissing = !await outFile.exists();
+
+        if (!changed && !fileMissing) continue;
+
         ConsoleLogger.info(
           'stac watch build started dir: $_buildDir/$subDir/${target.name}.json',
         );
-        final outFile = File('$_buildDir/$subDir/${target.name}.json');
         await outFile.parent.create(recursive: true);
         await outFile.writeAsString(jsonString);
 
