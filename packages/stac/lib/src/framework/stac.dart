@@ -187,7 +187,7 @@ class Stac extends StatelessWidget {
     bool logStackTraces = true,
     StacErrorWidgetBuilder? errorWidgetBuilder,
     StacCacheConfig? cacheConfig,
-    required String baseUrl,
+    String? baseUrl,
   }) async {
     return StacService.initialize(
       parsers: parsers,

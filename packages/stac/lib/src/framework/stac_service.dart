@@ -183,13 +183,13 @@ class StacService {
     bool logStackTraces = true,
     StacErrorWidgetBuilder? errorWidgetBuilder,
     StacCacheConfig? cacheConfig,
-    required String baseUrl,
+    String? baseUrl,
   }) async {
     if (cacheConfig != null) {
       _defaultCacheConfig = cacheConfig;
     }
 
-    StacCloud.setBaseUrl(baseUrl);
+    StacCloud.setBaseUrl(baseUrl ?? '');
 
     _parsers.addAll(parsers);
     _actionParsers.addAll(actionParsers);
