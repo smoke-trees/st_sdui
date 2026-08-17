@@ -178,7 +178,3 @@ This repository is a monorepo. The framework is split into several packages:
 ## Using From GitHub
 
 See [`usecase.md`](usecase.md) for full instructions on consuming these packages directly from this GitHub repository, including the **stac CLI**.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
