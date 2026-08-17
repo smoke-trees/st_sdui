@@ -93,6 +93,8 @@ Future<int> startWatchService({
 }) async {
   final buildService = BuildService();
 
+  ConsoleLogger.info('stac watch started in $projectRoot');
+
   final resolver = BuildTargetResolver(
     stacEntryDir: '$projectRoot/stac',
     libDir: '$projectRoot/lib',
