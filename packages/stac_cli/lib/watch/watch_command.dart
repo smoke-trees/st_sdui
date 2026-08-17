@@ -142,13 +142,8 @@ class WatchCommand {
     var anyChanged = false;
     var themeChanged = false;
 
-    ConsoleLogger.info('stac watch buildAndApply started targets: $targets');
-
     for (final target in targets) {
       try {
-        ConsoleLogger.info(
-          'stac watch build started dir: $_buildDir/${target.name}.json',
-        );
         final jsonString = await buildOne(target);
         final hash = sha256.convert(utf8.encode(jsonString)).toString();
 
