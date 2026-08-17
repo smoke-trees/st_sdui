@@ -1,56 +1,36 @@
-<p>
-  <img src="https://raw.githubusercontent.com/StacDev/stac/refs/heads/dev/assets/stac_banner.png" width="100%" alt="Stac: Server-Driven UI Framework for Flutter" />
-</p>
+# st_sdui
 
-<p align="center">
-  <a href="https://pub.dev/packages/stac"><img src="https://img.shields.io/pub/v/stac?label=pub.dev&labelColor=0F172A&logo=dart&logoColor=fff&color=0EA5E9&style=flat" alt="pub"></a>
-  <a href="https://github.com/StacDev/stac"><img src="https://img.shields.io/github/stars/StacDev/stac?style=flat&label=stars&labelColor=0F172A&color=8B5CF6&logo=github&logoColor=fff" alt="github"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-22C55E.svg?labelColor=0F172A&style=flat" alt="license"></a>
-  <a href="https://discord.com/invite/vTGsVRK86V"><img src="https://img.shields.io/discord/1326481685579173888?logo=discord&logoColor=fff&labelColor=0F172A&color=5865F2&style=flat" alt="discord"></a>
-  <a href="https://github.com/StacDev/stac"><img src="https://img.shields.io/github/contributors/StacDev/stac?logo=github&logoColor=fff&labelColor=0F172A&color=F59E0B&style=flat" alt="contributors"></a>
-  <a href="https://github.com/invertase/melos"><img src="https://img.shields.io/badge/maintained%20with-melos-F472B6.svg?labelColor=0F172A&style=flat" alt="melos"></a>
-</p>
+**st_sdui** is a **Server-Driven UI (SDUI) framework for Flutter**. It lets you build and update your app's UI on the fly, without waiting for app store reviews.
 
-<p align="center">
-  <a href="https://stac.dev/">Website</a> •
-  <a href="https://console.stac.dev/">Console</a> •
-  <a href="https://docs.stac.dev/quickstart">Quickstart</a> •
-  <a href="https://docs.stac.dev/">Documentation</a> •
-  <a href="https://discord.com/invite/vTGsVRK86V">Community & Support</a> •
-  <a href="https://github.com/StacDev/stac">GitHub</a>
-</p>
+Instead of hard-coding everything in your app, you write your UI using a **Dart DSL**. Your server then delivers this UI as a JSON payload, and st_sdui automatically renders it natively on the client at runtime.
 
-# Stac
+Why use st_sdui?
 
-**Stac** is a **Server-Driven UI (SDUI) framework for Flutter**. It lets you build and update your app's UI on the fly, without waiting for app store reviews!
-Instead of hard-coding everything in your app, you write your UI using **Stac's intuitive Dart DSL**. Your server then delivers this UI as a JSON payload, and Stac automatically renders it natively on the client at runtime.
-
-Why use Stac?
-
-- **Ship instantly:** Tweak your UI in Dart, push it to your server, and boom—your users see it immediately.
+- **Ship instantly:** Tweak your UI in Dart, push it to your server, and your users see it immediately.
 - **A/B testing made easy:** Try out different layouts or personalize the experience without rolling out a new app version.
 - **Build once:** Keep your UI consistent across iOS, Android, and Web with a unified backend schema.
 - **Move faster:** Let your backend dictate layouts directly without ever touching the client-side Flutter codebase.
 
-## Features 📦
+## Features
 
 - 🚀 **Instant updates:** Push UI changes straight from your server. No app store waiting rooms.
-- 💻 **Familiar Dart syntax:** Write your server UI using our purely Dart DSL. It feels just like writing traditional Flutter code!
-- 🧩 **Native rendering:** Stac translates your server's payload into lightning-fast native Flutter widgets on the client.
-- 🧱 **Prebuilt components:** Comes with a massive library of ready-to-use standard Flutter widgets.
+- 💻 **Familiar Dart syntax:** Write your server UI using a purely Dart DSL. It feels just like writing traditional Flutter code.
+- 🧩 **Native rendering:** st_sdui translates your server's payload into native Flutter widgets on the client.
+- 🧱 **Prebuilt components:** Comes with a large library of ready-to-use standard Flutter widgets.
 - 🌐 **Network requests:** Trigger API calls and manage data directly from your server payload.
 - 🧭 **Navigation:** Control routing, open dialogs, and trigger bottom sheets from the backend.
-- 📝 **Forms & validation:** We handle the messy form state and validation for you.
-- 🎨 **Dynamic theming:** Change colors, fonts, and layouts on the fly using `StacTheme`.
-- 💾 **Smart caching:** Built-in screen caching so your app feels blazing fast, even on flaky networks.
-- 🛠️ **Custom widgets:** Need a custom chart or native integration? Easily build and register your own UI components.
+- 📝 **Forms & validation:** Handle form state and validation from the server.
+- 🎨 **Dynamic theming:** Change colors, fonts, and layouts on the fly.
+- 💾 **Smart caching:** Built-in screen caching so your app feels fast, even on flaky networks.
+- 🛠️ **Custom widgets:** Easily build and register your own UI components.
 
 ## Quick Start
 
-It's super easy to get started. You just need to initialize Stac and tell it which screen to load.
+It's easy to get started. You just need to initialize the framework and tell it which screen to load.
 
-### 1. Initialize Stac
-Set up Stac in your app's `main.dart` and provide a `routeName` to fetch from your server.
+### 1. Initialize
+
+Set things up in your app's `main.dart` and provide a `routeName` to fetch from your server.
 
 ```dart
 import 'package:flutter/material.dart';
@@ -59,9 +39,9 @@ import 'package:stac/stac.dart';
 // import 'package:my_app/default_stac_options.dart';
 
 void main() async {
-  // Initialize Stac with optional custom configurations
+  // Initialize with optional custom configurations
   await Stac.initialize(options: defaultStacOptions);
-  
+
   runApp(const MyApp());
 }
 
@@ -71,7 +51,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Stac App',
+      title: 'st_sdui App',
       // Pass a routeName to load your dynamic SDUI screen!
       home: Stac(routeName: 'get_started'),
     );
@@ -80,7 +60,8 @@ class MyApp extends StatelessWidget {
 ```
 
 ### 2. Write your UI
-You can author your screens using Stac's Dart package. It feels just like writing normal Flutter code, but it compiles down to JSON!
+
+You can author your screens using the Dart package. It feels just like writing normal Flutter code, but it compiles down to JSON.
 
 <table width="100%">
 <tr>
@@ -127,7 +108,7 @@ StacWidget loginScreen() {
           ),
           StacSizedBox(height: 32),
           StacTextField(
-            decoration: StacInputDecoration( 
+            decoration: StacInputDecoration(
               labelText: 'Email',
               labelStyle: StacThemeData.textTheme.bodyMedium,
             ),
@@ -177,37 +158,27 @@ StacWidget primaryButton({
 }
 ```
 </td>
-<td width="30%" align="center" valign="top">
-  <img src="https://github.com/StacDev/stac/blob/dev/assets/login.png" alt="Stac Form Screen" height="840" />
-</td>
 </tr>
 </table>
 
-## Documentation
+## Packages
 
-- 📚 **[Full Documentation](https://docs.stac.dev/)** – Complete guides and API reference
-- 🚀 **[Quick Start](https://docs.stac.dev/quickstart)** – Get up and running in minutes
-- 🛠️ **[Stac CLI](https://docs.stac.dev/cli)** – Command-line tools for development
-- 🎛️ **[Stac Console](https://console.stac.dev/)** – Web interface for managing your app
-- 🤝 **[Contributing](https://github.com/StacDev/stac/blob/dev/CONTRIBUTING.md)** – Help build Stac
+This repository is a monorepo. The framework is split into several packages:
+
+| Package | Description |
+|---|---|
+| [`stac`](packages/stac) | The main Flutter package — rendering, network, navigation, forms, theming, caching. |
+| [`stac_core`](packages/stac_core) | Pure-Dart core models and interfaces, used in screen/theme definition files. |
+| [`stac_framework`](packages/stac_framework) | Framework internals such as `StacParser` and `StacActionParser` for custom widgets/actions. |
+| [`stac_logger`](packages/stac_logger) | Lightweight cross-platform logging utility. |
+| [`stac_webview`](packages/stac_webview) | WebView widget support. |
+| [`stac_cli`](packages/stac_cli) | CLI to build, watch, and deploy SDUI projects. |
+| `stac-vscode` | VS Code extension for live preview and snippets. |
+
+## Using From GitHub
+
+See [`usecase.md`](usecase.md) for full instructions on consuming these packages directly from this GitHub repository, including the **stac CLI**.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
-
-## Join our community
-
-- 💬 **[Discord](https://discord.com/invite/vTGsVRK86V)** – Chat with the community and get help
-- 🐙 **[GitHub](https://github.com/StacDev/stac)** – Report issues and contribute
-- 🐦 **[X](https://x.com/stac_dev)** – Follow us for updates
-
----
-
-<p align="center"> Developed with 💙 by the Stac team and our amazing community</p>
-
-<p align="center">
-<a href="https://github.com/StacDev/stac/graphs/contributors">
-  <img src="https://raw.githubusercontent.com/StacDev/stac/refs/heads/dev/assets/contributor_banner.png" alt="Stac Contributors"/>
-</a>
-</p>
-

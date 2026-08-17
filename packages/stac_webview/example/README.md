@@ -1,13 +1,13 @@
-## Example
+# Example
 
-1. Add `stac_webview` as a dependency in your pubspec.yaml file.
+1. Add `stac_webview` as a dependency in your `pubspec.yaml`:
 
 ```yaml
-  dependencies:
-    stac_webview:
+dependencies:
+  stac_webview:
 ```
 
-2. Add `StacWebViewParser` in Stac initialize.
+2. Add `StacWebViewParser` in the framework initialization.
 
 ```dart
 void main() async {
@@ -21,11 +21,11 @@ void main() async {
 }
 ```
 
-3. Add Stac WebView widget in your JSONs.
+3. Add the WebView widget in your JSON.
 
-```JSON
+```json
 {
   "type": "webView",
-  "url": "https://github.com/StacDev/stac"
+  "url": "https://example.com"
 }
 ```

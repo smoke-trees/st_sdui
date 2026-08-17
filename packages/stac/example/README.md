@@ -1,6 +1,6 @@
 # Example
 
-Here is an example of a basic form screen build with Stac.
+Here is an example of a basic form screen built with the **st_sdui** Server-Driven UI framework.
 
 ## Server
 
@@ -283,7 +283,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StacApp(
-      title: 'Stac Demo',
+      title: 'st_sdui Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -300,15 +300,10 @@ class MyApp extends StatelessWidget {
 
 >Note:
 >
->Stac provides multiple methods to parse JSONs into Flutter widgets. You can use `Stac.fromNetwork()`,  `Stac.fromJson()` & `Stac.fromAsset()`
+>The framework provides multiple methods to parse JSONs into Flutter widgets. You can use `Stac.fromNetwork()`, `Stac.fromJson()` & `Stac.fromAsset()`
 
-That's it with just few lines of code your SDUI app is up and running.
-
-![Form Screen][form_screen]
+That's it — with just a few lines of code your SDUI app is up and running.
 
 ### More examples
 
-Check out the [Stac Playground](https://github.com/StacDev/stac/tree/main/stac_playground) app for more such examples.
-
-
-[form_screen]: https://github.com/StacDev/stac/blob/main/assets/form_screen_image.png
+Check out the [stac_playground](../../stac_playground) app for more such examples.

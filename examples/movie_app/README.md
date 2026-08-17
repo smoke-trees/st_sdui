@@ -1,13 +1,13 @@
 # Movie App Example
 
-A comprehensive example of building a full-featured application using the Stac Server-Driven UI framework. This movie application fetches data and UI layouts dynamically to display movie listings and details.
+A comprehensive example of building a full-featured application using the **st_sdui** Server-Driven UI framework. This movie application fetches data and UI layouts dynamically to display movie listings and details.
 
 ## What this demonstrates
 
-- Complex dynamic layouts using Stac components.
+- Complex dynamic layouts using framework components.
 - Network data fetching combined with SDUI.
 - Navigating between different server-driven screens.
-- Global theming using the Stac theme system.
+- Global theming using the theme system.
 
 ## How to run
 

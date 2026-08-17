@@ -1,10 +1,10 @@
 # Counter Example
 
-A simple counter application using Stac Server-Driven UI, demonstrating how to build a Custom Widget and Action in Stac.
+A simple counter application using **st_sdui** Server-Driven UI, demonstrating how to build a custom widget and action.
 
 ## What this demonstrates
 
-- Creating a **custom widget scaler parser** that isn't included in the default Stac framework.
+- Creating a **custom widget parser** that isn't included in the default framework.
 - Implementing a **custom action** to increment a counter natively.
 - Connecting local Dart logic with server-driven layout definitions.
 

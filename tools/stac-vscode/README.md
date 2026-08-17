@@ -1,32 +1,32 @@
-# Stac — Server-Driven UI for Flutter
+# stac-vscode — Server-Driven UI for Flutter
 
-Build and preview Server-Driven UI screens with the **Stac** framework — directly inside VS Code.
+Build and preview Server-Driven UI screens with the **st_sdui** framework — directly inside VS Code.
 
-## ✨ Features
+## Features
 
-### 🔴 Live Preview
+### Live Preview
+
 Open a side-by-side preview of any `@StacScreen` — updates on save, supports theme selection, and renders with Android/iOS/Web platform simulation.
-
-![Stac Live Preview](https://raw.githubusercontent.com/StacDev/stac/dev/tools/stac-vscode/media/stac_preview.png)
-
 
 - **`Stac: Open Preview`** — launch the preview panel for the active screen
 - **Device toggles** — switch between Android, iOS, and Web viewports
 - **Theme picker** — select any `@StacThemeRef` theme to preview with
 
-### 🔧 Wrap Quick Fixes
-Place your cursor on any Stac widget expression and press **Cmd+.** to wrap it:
+### Wrap Quick Fixes
+
+Place your cursor on any widget expression and press **Cmd+.** to wrap it:
 
 - `StacContainer`, `StacPadding`, `StacCenter`, `StacAlign`, `StacSizedBox`, `StacExpanded`
-- **Wrap with Stac widget…** — type any Stac widget class name
+- **Wrap with widget…** — type any widget class name
 
-### 📝 Snippets
-Type in a Stac DSL context (files containing `@StacScreen`, `@StacThemeRef`, or `package:stac_core`):
+### Snippets
+
+Type in a DSL context (files containing `@StacScreen`, `@StacThemeRef`, or `package:stac_core`):
 
 - `stac screen` — new screen template
 - `stac theme` — new theme template
 
-## ⚙️ Extension Settings
+## Extension Settings
 
 | Setting | Default | Description |
 |---|---|---|
@@ -42,7 +42,7 @@ Type in a Stac DSL context (files containing `@StacScreen`, `@StacThemeRef`, or 
 ## Requirements
 
 - **Flutter SDK** with Dart `3.9.2+`
-- A Flutter project using the [Stac](https://stac.dev) framework
+- A Flutter project using the **st_sdui** framework
 
 ## Commands
 
@@ -56,12 +56,6 @@ Type in a Stac DSL context (files containing `@StacScreen`, `@StacThemeRef`, or 
 ## Troubleshooting
 
 If the preview doesn't start, open **Output → Stac Preview** for detailed logs.
-
-## Links
-
-- [Stac Documentation](https://stac.dev)
-- [GitHub Repository](https://github.com/StacDev/stac)
-- [Report Issues](https://github.com/StacDev/stac/issues)
 
 ## License
 

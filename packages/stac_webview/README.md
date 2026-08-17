@@ -1,28 +1,23 @@
-# Stac Web View
+# stac_webview
 
-[![pub package](https://img.shields.io/pub/v/stac_webview.svg?label=stac_webview&color=blue)](https://pub.dev/packages/stac_webview)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-A WebView support package for [Stac](https://pub.dev/packages/stac).
+A WebView support package for **st_sdui**, the Server-Driven UI (SDUI) framework for Flutter.
 
 ## Usage
 
-1. Add `stac_webview` as a dependency in your pubspec.yaml file.
-
-Install the plugin by running the following command from the project root:
+1. Add `stac_webview` as a dependency in your `pubspec.yaml`:
 
 ```bash
 flutter pub add stac_webview
 ```
 
-or add it manually in your `pubspec.yaml` file:
+or add it manually:
 
 ```yaml
-  dependencies:
-    stac_webview:
+dependencies:
+  stac_webview:
 ```
 
-2. Add `StacWebViewParser` in Stac initialize.
+2. Add `StacWebViewParser` in the framework initialization.
 
 ```dart
 void main() async {
@@ -36,11 +31,11 @@ void main() async {
 }
 ```
 
-3. Add Stac WebView widget in your JSONs.
+3. Add the WebView widget in your JSON.
 
-```JSON
+```json
 {
   "type": "webView",
-  "url": "https://github.com/StacDev/stac"
+  "url": "https://example.com"
 }
 ```

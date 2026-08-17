@@ -1,19 +1,20 @@
 # stac_cli
 
-Official command-line interface for the [Stac](https://pub.dev/packages/stac) SDUI framework. Use this CLI to quickly initialize Stac configurations, build projects, log in to Stac Cloud, and manage deployments.
-
-📚 **[Full CLI Documentation available at docs.stac.dev/cli](https://docs.stac.dev/cli)**
+Command-line interface for the **st_sdui** Server-Driven UI (SDUI) framework. Use this CLI to initialize configurations, build projects, watch for changes, log in to the cloud service, and manage deployments.
 
 ## Install
 
-**macOS / Linux**
+Activate the CLI directly from this monorepo:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/StacDev/install/main/install.sh | bash
+dart pub global activate --source git --git-path packages/stac_cli --git-ref main https://github.com/smoke-trees/st_sdui.git
 ```
 
-**Windows (PowerShell)**
-```powershell
-irm https://raw.githubusercontent.com/StacDev/install/main/install.ps1 | iex
+Verify the installation:
+
+```bash
+stac --version
+stac watch --help
 ```
 
 ## Quick start
@@ -27,10 +28,7 @@ stac watch
 stac deploy
 ```
 
-`stac watch` starts the local development server, incrementally rebuilds
-changed screens and themes, and launches the Flutter app. Use `--no-app` to
-run only the watcher. Configure a session with `--device <id>`,
-`--host <address>`, and `--port <port>`.
+`stac watch` starts the local development server, incrementally rebuilds changed screens and themes, and launches the Flutter app. Use `--no-app` to run only the watcher. Configure a session with `--device <id>`, `--host <address>`, and `--port <port>`.
 
 ## Environment
 
@@ -47,4 +45,3 @@ Required keys:
 - `STAC_FIREBASE_API_KEY`
 
 Set environment in code via `currentEnvironment` in `lib/src/config/env.dart`.
-

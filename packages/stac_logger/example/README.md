@@ -1,4 +1,4 @@
-## Getting started
+# Getting started
 
 Add the package to your `pubspec.yaml`:
 
@@ -23,13 +23,13 @@ import 'package:stac_logger/stac_logger.dart';
 void main() {
   // Log a debug message
   Log.d('Debug message');
-  
+
   // Log an info message
   Log.i('Info message');
-  
+
   // Log a warning message
   Log.w('Warning message');
-  
+
   // Log an error message
   Log.e('Error message');
 }

@@ -1,7 +1,7 @@
 # Example
 
-A pure Dart package that provides the core functionalities and common interfaces for the [Stac](https://pub.dev/packages/stac).
+A pure Dart package that provides the core functionalities and common interfaces for the **st_sdui** Server-Driven UI (SDUI) framework.
 
-This package serves as the foundation for building server-driven UIs with Stac by defining core models, functionalities, and common interfaces that stac package depend upon.
+This package serves as the foundation for building server-driven UIs by defining core models, functionalities, and common interfaces that the other st_sdui packages depend upon.
 
-For example please refer to [Stac](https://pub.dev/packages/stac).
+For examples, please refer to the stac package.

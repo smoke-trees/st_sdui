@@ -1,16 +1,10 @@
 # stac_playground
 
-Stac Playground
+An interactive Flutter app for exploring and experimenting with the **st_sdui** Server-Driven UI framework. It combines the Playground and Gallery into a single app for showcasing screens, themes, and widgets.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter pub get
+flutter run
+```
