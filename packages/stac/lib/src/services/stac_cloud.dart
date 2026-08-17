@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:stac/src/framework/stac_service.dart';
 import 'package:stac/src/models/stac_artifact_type.dart';
@@ -246,7 +244,7 @@ class StacCloud {
     final fetchUrl = _getFetchUrl(artifactType);
     final queryParamName = _getQueryParamName(artifactType);
 
-    log('queryParamName $queryParamName fetch $fetchUrl');
+    print('\x1B[32m queryParamName $queryParamName fetch $fetchUrl \x1B[0m');
 
     return _dio.get(
       fetchUrl,
@@ -266,6 +264,10 @@ class StacCloud {
     final response = await _makeArtifactRequest(
       artifactType: artifactType,
       artifactName: artifactName,
+    );
+
+    print(
+      '\x1B[32m fetchArtifactFromNetwork response.data ${response.data} \x1B[0m',
     );
 
     // Save to cache if enabled and response is valid
