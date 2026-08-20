@@ -26,7 +26,7 @@ class WatchCommand {
     // — deploy only ever pushes what a real `stac build` produced.
     this.spawnApp = true,
     this.deviceId,
-    this.host = '192.168.1.17', // physical-device default per your call
+    this.host = 'localhost', // physical-device default per your call
     this.debounce = const Duration(milliseconds: 300),
     this.isDevelopment = true,
     this.appTarget = 'lib/main.dart',

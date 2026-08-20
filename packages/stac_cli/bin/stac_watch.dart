@@ -12,7 +12,7 @@ class StacWatchCommand extends BaseCommand {
   StacWatchCommand() {
     argParser.addOption(
       'host',
-      defaultsTo: '192.168.1.17',
+      defaultsTo: 'localhost',
       help: 'Host address exposed to the Flutter app.',
     );
     argParser.addOption(
@@ -76,7 +76,7 @@ Future<void> main(List<String> args) async {
   exitCode = await startWatchService(
     projectRoot: Directory.current.path,
     port: port,
-    host: _argValue(args, '--host') ?? '192.168.1.17',
+    host: _argValue(args, '--host') ?? 'localhost',
     spawnApp: !args.contains('--no-app'),
     deviceId: _argValue(args, '--device'),
     isDevelopment: !args.contains('--no-dev'),
