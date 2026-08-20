@@ -41,16 +41,34 @@ class FlutterSdk {
       }
     }
 
+    // Windows uses .bat shims; POSIX uses extension-less shims.
+    final exeCandidates = Platform.isWindows
+        ? ['$name.bat', name]
+        : [name, '$name.bat'];
+
     for (final dirPath in candidates) {
       final bin = Directory('$dirPath/bin');
       if (!bin.existsSync()) continue;
-      // Windows uses .bat shims; POSIX uses extension-less shims.
-      for (final exe in ['$name.bat', name]) {
+      for (final exe in exeCandidates) {
         final file = File('${bin.path}/$exe');
-        if (file.existsSync()) return file.path;
+        if (!file.existsSync()) continue;
+        // On POSIX, skip shims that lack the execute bit (e.g. stray .bat
+        // files left in .fvm after a Windows checkout), which would otherwise
+        // fail with "Permission denied".
+        if (!Platform.isWindows && !_isExecutable(file)) continue;
+        return file.path;
       }
     }
     return null;
+  }
+
+  static bool _isExecutable(File file) {
+    try {
+      // Owner/group/other execute bits (0x40 | 0x08 | 0x01).
+      return (file.statSync().mode & 0x49) != 0;
+    } catch (_) {
+      return false;
+    }
   }
 
   static String? _pinnedFvmVersion(String projectRoot) {
