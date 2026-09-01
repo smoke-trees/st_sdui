@@ -216,13 +216,13 @@ class BuildService {
       projectDir,
       'lib',
       'app',
-      'default_stac_options.dart',
+      // 'default_stac_options.dart',
     );
-    if (!await FileUtils.fileExists(optionsPath)) {
-      throw const BuildException(
-        'Could not find default_stac_options.dart. Run "stac init" first.',
-      );
-    }
+    // if (!await FileUtils.fileExists(optionsPath)) {
+    //   throw const BuildException(
+    //     'Could not find default_stac_options.dart. Run "stac init" first.',
+    //   );
+    // }
 
     try {
       final content = await FileUtils.readFile(optionsPath);
