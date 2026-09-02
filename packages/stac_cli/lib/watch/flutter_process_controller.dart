@@ -100,9 +100,9 @@ class FlutterProcessController {
     print('\x1B[34mwatching for changes…\x1B[0m');
     print('\x1B[32m(r = hot reload, R = hot restart, q = quit)\x1B[0m');
     await _appReady.future.timeout(
-      const Duration(minutes: 3),
+      const Duration(minutes: 10),
       onTimeout: () => print(
-        '\x1B[31mapp.start not seen after 3min — is a device connected? '
+        '\x1B[31mapp.start not seen after 10min — is a device connected? '
         '(flutter devices)\x1B[0m',
       ),
     );
