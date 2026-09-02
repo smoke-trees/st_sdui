@@ -322,29 +322,27 @@ class FlutterProcessController {
 
   /// Gets the device type from device information.
   DeviceType _getDeviceType(Map<String, dynamic> device) {
-    final platform = device['platform'] as String?;
+    final targetPlatform = device['targetPlatform'] as String?;
     final emulator = device['emulator'] as bool?;
     final id = device['id'] as String?;
     
     // Check for Android emulator
-    if (platform == 'android-x86' || 
-        platform == 'android-x64' ||
-        (platform == 'android' && emulator == true)) {
+    if (targetPlatform != null && targetPlatform.startsWith('android') && emulator == true) {
       return DeviceType.androidEmulator;
     }
     
     // Check for iOS simulator
-    if (platform == 'ios' && emulator == true) {
+    if (targetPlatform != null && targetPlatform.startsWith('ios') && emulator == true) {
       return DeviceType.iosSimulator;
     }
     
     // Check for physical Android device
-    if (platform == 'android' && emulator == false) {
+    if (targetPlatform != null && targetPlatform.startsWith('android') && emulator == false) {
       return DeviceType.physicalDevice;
     }
     
     // Check for physical iOS device (not a simulator)
-    if (platform == 'ios' && emulator == false) {
+    if (targetPlatform != null && targetPlatform.startsWith('ios') && emulator == false) {
       return DeviceType.physicalDevice;
     }
     
