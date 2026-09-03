@@ -85,13 +85,6 @@ class WatchCommand {
     // Ensure the first app request can be served from the completed build.
     if (spawnApp) {
       final resolvedDeviceId = await _resolveDeviceId(deviceId);
-      if (resolvedDeviceId == null) {
-        throw StateError(
-          'Multiple devices connected. Please specify a device with:\n'
-          '  stac watch --device <deviceId>\n\n'
-          'Run "flutter devices" to see available devices.',
-        );
-      }
       await _flutterCtrl!.start(deviceId: resolvedDeviceId);
     }
 
@@ -205,7 +198,7 @@ class WatchCommand {
   /// Resolves the device ID to use for Flutter run.
   /// - If deviceId is provided, validates it exists and returns it
   /// - If no deviceId is provided and only one device is connected, returns that device
-  /// - If no deviceId is provided and multiple devices are connected, returns null
+  /// - If no deviceId is provided and multiple devices are connected, prompts user to select
   Future<String?> _resolveDeviceId(String? deviceId) async {
     try {
       final fvmFlutter = FlutterSdk.resolveFlutterSync(projectRoot);
@@ -252,16 +245,33 @@ class WatchCommand {
         return autoDevice;
       }
 
-      // Multiple devices and no selection - list them for the user
+      // Multiple devices - prompt user to select
       print('\x1B[33mMultiple devices connected:\x1B[0m');
-      for (final device in devices) {
-        final id = device['id'];
+      for (var i = 0; i < devices.length; i++) {
+        final device = devices[i];
         final name = device['name'];
+        final id = device['id'];
         final platform = device['targetPlatform'];
-        print('  • $name ($id) • $platform');
+        print('  \x1B[36m${i + 1})\x1B[0m $name ($id) • $platform');
       }
       
-      return null; // Signal that user needs to choose
+      print('\n\x1B[33mSelect a device (1-${devices.length}) or press Enter to cancel:\x1B[0m ');
+      stdout.write('> ');
+      
+      final input = stdin.readLineSync()?.trim();
+      
+      if (input == null || input.isEmpty) {
+        throw StateError('Device selection cancelled.');
+      }
+      
+      final selection = int.tryParse(input);
+      if (selection == null || selection < 1 || selection > devices.length) {
+        throw StateError('Invalid selection "$input". Please enter a number between 1 and ${devices.length}.');
+      }
+      
+      final selectedDevice = devices[selection - 1]['id'] as String;
+      print('\x1B[32m✓ Selected device: $selectedDevice\x1B[0m');
+      return selectedDevice;
     } catch (e) {
       if (e is StateError) rethrow;
       print('\x1B[33mWarning: Error detecting devices: $e\x1B[0m');
