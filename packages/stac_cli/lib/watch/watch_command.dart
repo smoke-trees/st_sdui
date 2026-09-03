@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:stac_cli/src/utils/console_logger.dart';
+import 'package:stac_cli/src/utils/flutter_sdk.dart';
 import 'package:watcher/watcher.dart';
 
 import 'build_target_resolver.dart';
@@ -82,7 +83,17 @@ class WatchCommand {
     await _buildAndApply(targets, triggerReload: false);
 
     // Ensure the first app request can be served from the completed build.
-    if (spawnApp) await _flutterCtrl!.start(deviceId: deviceId);
+    if (spawnApp) {
+      final resolvedDeviceId = await _resolveDeviceId(deviceId);
+      if (resolvedDeviceId == null) {
+        throw StateError(
+          'Multiple devices connected. Please specify a device with:\n'
+          '  stac watch --device <deviceId>\n\n'
+          'Run "flutter devices" to see available devices.',
+        );
+      }
+      await _flutterCtrl!.start(deviceId: resolvedDeviceId);
+    }
 
     for (final dir in resolver.watchDirs) {
       if (!await Directory(dir).exists()) continue;
@@ -188,6 +199,73 @@ class WatchCommand {
 
     if (anyChanged && triggerReload) {
       await _flutterCtrl!.triggerReload(themeChanged: themeChanged);
+    }
+  }
+
+  /// Resolves the device ID to use for Flutter run.
+  /// - If deviceId is provided, validates it exists and returns it
+  /// - If no deviceId is provided and only one device is connected, returns that device
+  /// - If no deviceId is provided and multiple devices are connected, returns null
+  Future<String?> _resolveDeviceId(String? deviceId) async {
+    try {
+      final fvmFlutter = FlutterSdk.resolveFlutterSync(projectRoot);
+      final executable = Platform.isWindows
+          ? (fvmFlutter ?? 'flutter.bat')
+          : (fvmFlutter ?? 'flutter');
+      
+      final result = await Process.run(
+        executable,
+        ['devices', '--machine'],
+        workingDirectory: projectRoot,
+        runInShell: true,
+      );
+
+      if (result.exitCode != 0) {
+        print('\x1B[33mWarning: Could not list Flutter devices\x1B[0m');
+        return deviceId;
+      }
+
+      final devices = (jsonDecode(result.stdout as String) as List<dynamic>)
+          .cast<Map<String, dynamic>>();
+
+      if (devices.isEmpty) {
+        throw StateError('No devices connected. Run "flutter devices" to verify.');
+      }
+
+      // If user specified a device, validate it exists
+      if (deviceId != null) {
+        final deviceExists = devices.any((d) => d['id'] == deviceId);
+        if (!deviceExists) {
+          final availableIds = devices.map((d) => d['id'] as String).join(', ');
+          throw StateError(
+            'Device "$deviceId" not found.\n'
+            'Available devices: $availableIds',
+          );
+        }
+        return deviceId;
+      }
+
+      // If only one device, use it automatically
+      if (devices.length == 1) {
+        final autoDevice = devices.first['id'] as String;
+        print('\x1B[34mAuto-selecting device: $autoDevice\x1B[0m');
+        return autoDevice;
+      }
+
+      // Multiple devices and no selection - list them for the user
+      print('\x1B[33mMultiple devices connected:\x1B[0m');
+      for (final device in devices) {
+        final id = device['id'];
+        final name = device['name'];
+        final platform = device['targetPlatform'];
+        print('  • $name ($id) • $platform');
+      }
+      
+      return null; // Signal that user needs to choose
+    } catch (e) {
+      if (e is StateError) rethrow;
+      print('\x1B[33mWarning: Error detecting devices: $e\x1B[0m');
+      return deviceId;
     }
   }
 
