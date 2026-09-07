@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -367,6 +368,10 @@ class _StacViewState extends State<_StacView> {
           Log.i(
             'Fetched screen JSON for route ${widget.routeName}: $jsonString',
           );
+          print(
+            'Fetched screen JSON for route ${widget.routeName}: $jsonString',
+          );
+          log('Fetched screen JSON for route ${widget.routeName}: $jsonString');
 
           // Substitute {{key}} placeholders with values from the arguments
           // this screen was navigated to with (see StacNavigator/navigate
