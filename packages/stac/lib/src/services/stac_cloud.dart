@@ -246,12 +246,29 @@ class StacCloud {
 
     print('\x1B[32m queryParamName $queryParamName fetch $fetchUrl \x1B[0m');
 
+    final queryParams = <String, dynamic>{
+      queryParamName: artifactName,
+      "isLatest": true,
+    };
+
+    // Add cache-busting in development mode
+    final cacheConfig = StacService.defaultCacheConfig;
+    if (cacheConfig.strategy == StacCacheStrategy.networkOnly) {
+      queryParams['_t'] = DateTime.now().millisecondsSinceEpoch;
+    }
+
     return _dio.get(
       fetchUrl,
-      queryParameters: <String, dynamic>{
-        queryParamName: artifactName,
-        "isLatest": true,
-      },
+      queryParameters: queryParams,
+      options: Options(
+        headers: cacheConfig.strategy == StacCacheStrategy.networkOnly
+            ? {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+              }
+            : null,
+      ),
     );
   }
 
