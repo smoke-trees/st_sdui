@@ -316,7 +316,7 @@ class Stac extends StatelessWidget {
 }
 
 /// Internal stateless widget that handles fetching and rendering Stac screens.
-class _StacView extends StatelessWidget {
+class _StacView extends StatefulWidget {
   const _StacView({
     required this.routeName,
     this.loadingWidget,
@@ -328,15 +328,37 @@ class _StacView extends StatelessWidget {
   final Widget? errorWidget;
 
   @override
+  State<_StacView> createState() => _StacViewState();
+}
+
+class _StacViewState extends State<_StacView> {
+  late Future<Response?> _fetchFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchFuture = StacCloud.fetchScreen(routeName: widget.routeName);
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    // This is called during hot reload - refetch the screen
+    setState(() {
+      _fetchFuture = StacCloud.fetchScreen(routeName: widget.routeName);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<Response?>(
-      future: StacCloud.fetchScreen(routeName: routeName),
+      future: _fetchFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return loadingWidget ?? const _LoadingWidget();
+          return widget.loadingWidget ?? const _LoadingWidget();
         }
         if (snapshot.hasError) {
-          return errorWidget ?? const SizedBox();
+          return widget.errorWidget ?? const SizedBox();
         }
         if (snapshot.hasData) {
           var jsonString =
@@ -349,7 +371,7 @@ class _StacView extends StatelessWidget {
           // needing a custom parser to read ModalRoute manually.
           final navArgs = ModalRoute.of(context)?.settings.arguments;
           if (navArgs is Map) {
-            jsonString = _substituteVariables(jsonString, navArgs);
+            jsonString = _StacViewState._substituteVariables(jsonString, navArgs);
           }
 
           return StacService.fromJson(jsonDecode(jsonString), context) ??
