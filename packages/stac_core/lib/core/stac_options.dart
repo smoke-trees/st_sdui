@@ -42,4 +42,31 @@ class StacOptions {
   ///
   /// Can be absolute or relative to your project root.
   final String outputDir;
+
+  /// Creates a copy of this [StacOptions] with the given fields replaced.
+  factory StacOptions.fromJson(Map<String, dynamic> json) {
+    return StacOptions(
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      projectId: json['projectId'] as String,
+      sourceDir: json['sourceDir'] as String,
+      outputDir: json['outputDir'] as String,
+    );
+  }
+
+  /// Creates a copy of this [StacOptions] with the given fields replaced.
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'projectId': projectId,
+      'sourceDir': sourceDir,
+      'outputDir': outputDir,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'StacOptions(name: $name, description: $description, projectId: $projectId, sourceDir: $sourceDir, outputDir: $outputDir)';
+  }
 }

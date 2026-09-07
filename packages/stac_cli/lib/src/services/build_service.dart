@@ -254,14 +254,18 @@ class BuildService {
       );
     } catch (e) {
       // If parsing fails, use defaults
-      ConsoleLogger.error('Failed to parse build options, using defaults: $e');
-      return const StacOptions(
+      ConsoleLogger.warning(
+        'Failed to parse build options, using defaults: $e',
+      );
+      var opt = const StacOptions(
         name: 'Stac',
         description: 'Stac',
         projectId: 'stac',
         sourceDir: 'stac',
         outputDir: 'stac/.build',
       );
+      ConsoleLogger.info('Using default build options: ${opt.toString()}');
+      return opt;
     }
   }
 
