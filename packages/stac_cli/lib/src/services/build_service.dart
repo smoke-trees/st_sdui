@@ -216,7 +216,7 @@ class BuildService {
       projectDir,
       'lib',
       'app',
-      // 'default_stac_options.dart',
+      'default_stac_options.dart',
     );
     // if (!await FileUtils.fileExists(optionsPath)) {
     //   throw const BuildException(
