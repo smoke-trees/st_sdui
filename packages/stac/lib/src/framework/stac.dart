@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:stac/src/services/stac_cloud.dart';
 import 'package:stac_core/actions/network_request/stac_network_request.dart';
 import 'package:stac_core/core/stac_options.dart';
 import 'package:stac_framework/stac_framework.dart';
-import 'package:stac_logger/stac_logger.dart';
 
 /// Builder function for displaying errors in Stac widgets.
 ///
@@ -318,7 +316,7 @@ class Stac extends StatelessWidget {
 }
 
 /// Internal stateless widget that handles fetching and rendering Stac screens.
-class _StacView extends StatefulWidget {
+class _StacView extends StatelessWidget {
   const _StacView({
     required this.routeName,
     this.loadingWidget,
@@ -330,48 +328,19 @@ class _StacView extends StatefulWidget {
   final Widget? errorWidget;
 
   @override
-  State<_StacView> createState() => _StacViewState();
-}
-
-class _StacViewState extends State<_StacView> {
-  late Future<Response?> _fetchFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchFuture = StacCloud.fetchScreen(routeName: widget.routeName);
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    // This is called during hot reload - refetch the screen
-    setState(() {
-      _fetchFuture = StacCloud.fetchScreen(routeName: widget.routeName);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FutureBuilder<Response?>(
-      future: _fetchFuture,
+      future: StacCloud.fetchScreen(routeName: routeName),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return widget.loadingWidget ?? const _LoadingWidget();
+          return loadingWidget ?? const _LoadingWidget();
         }
         if (snapshot.hasError) {
-          return widget.errorWidget ?? const SizedBox();
+          return errorWidget ?? const SizedBox();
         }
         if (snapshot.hasData) {
           var jsonString =
               snapshot.data!.data['result'][0]['screenJson'] as String;
-          Log.i(
-            'Fetched screen JSON for route ${widget.routeName}: $jsonString',
-          );
-          print(
-            'Fetched screen JSON for route ${widget.routeName}: $jsonString',
-          );
-          log('Fetched screen JSON for route ${widget.routeName}: $jsonString');
 
           // Substitute {{key}} placeholders with values from the arguments
           // this screen was navigated to with (see StacNavigator/navigate
@@ -380,10 +349,7 @@ class _StacViewState extends State<_StacView> {
           // needing a custom parser to read ModalRoute manually.
           final navArgs = ModalRoute.of(context)?.settings.arguments;
           if (navArgs is Map) {
-            jsonString = _StacViewState._substituteVariables(
-              jsonString,
-              navArgs,
-            );
+            jsonString = _substituteVariables(jsonString, navArgs);
           }
 
           return StacService.fromJson(jsonDecode(jsonString), context) ??
