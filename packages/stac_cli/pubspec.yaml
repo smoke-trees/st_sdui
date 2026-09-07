@@ -3,6 +3,7 @@ description: A CLI tool for managing Stac SDUI (Server-Driven UI) projects and c
 version: 1.6.0
 repository: https://github.com/StacDev/stac
 homepage: https://stac.dev/
+publish_to: none
 
 environment:
   sdk: ^3.8.1
@@ -14,19 +15,14 @@ dependencies:
   yaml: ^3.1.3
   path: ^1.9.1
   interact: ^2.2.0
+  stac_core:
+    path: ../stac_core
   json_annotation: ^4.11.0
   dotenv: ^4.2.0
   cryptography: ^2.9.0
   archive: ^4.0.9
   crypto: ^3.0.7
   watcher: ^1.2.1
-
-dependency_overrides:
-  stac_core:
-    git:
-      url: https://github.com/smoke-trees/st_sdui.git
-      ref: main
-      path: packages/stac_core
 
 # Executables that can be run globally
 executables:

@@ -3,6 +3,7 @@ description: Stac is a Server-Driven UI (SDUI) framework for Flutter. Stac allow
 version: 1.5.0
 repository: https://github.com/StacDev/stac
 homepage: https://stac.dev/
+publish_to: none
 
 environment:
   sdk: ^3.9.2
@@ -23,25 +24,12 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.3
   shared_preferences: ^2.5.4
-
-dependency_overrides:
   stac_core:
-    git:
-      url: https://github.com/smoke-trees/st_sdui.git
-      ref: main
-      path: packages/stac_core
-
+    path: ../stac_core
   stac_framework:
-    git:
-      url: https://github.com/smoke-trees/st_sdui.git
-      ref: main
-      path: packages/stac_framework
-
+    path: ../stac_framework
   stac_logger:
-    git:
-      url: https://github.com/smoke-trees/st_sdui.git
-      ref: main
-      path: packages/stac_logger
+    path: ../stac_logger
 
 dev_dependencies:
   flutter_test:
