@@ -190,7 +190,7 @@ class StacService {
     }
 
     StacCloud.setBaseUrl(baseUrl ?? '');
-    print('baseUrlssssssssssssssssssssss: $baseUrl');
+    Log.i('baseUrlssssssssssssssssssssss: $baseUrl');
 
     _parsers.addAll(parsers);
     _actionParsers.addAll(actionParsers);

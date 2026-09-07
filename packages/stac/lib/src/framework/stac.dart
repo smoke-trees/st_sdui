@@ -10,6 +10,7 @@ import 'package:stac/src/services/stac_cloud.dart';
 import 'package:stac_core/actions/network_request/stac_network_request.dart';
 import 'package:stac_core/core/stac_options.dart';
 import 'package:stac_framework/stac_framework.dart';
+import 'package:stac_logger/stac_logger.dart';
 
 /// Builder function for displaying errors in Stac widgets.
 ///
@@ -341,6 +342,7 @@ class _StacView extends StatelessWidget {
         if (snapshot.hasData) {
           var jsonString =
               snapshot.data!.data['result'][0]['screenJson'] as String;
+          Log.i('Fetched screen JSON for route ${routeName}: $jsonString');
 
           // Substitute {{key}} placeholders with values from the arguments
           // this screen was navigated to with (see StacNavigator/navigate
