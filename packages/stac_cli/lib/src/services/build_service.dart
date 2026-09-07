@@ -215,7 +215,6 @@ class BuildService {
     final optionsPath = path.join(
       projectDir,
       'lib',
-      'app',
       'default_stac_options.dart',
     );
     // if (!await FileUtils.fileExists(optionsPath)) {
