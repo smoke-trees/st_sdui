@@ -10,6 +10,7 @@ import 'package:stac/src/services/stac_cloud.dart';
 import 'package:stac_core/actions/network_request/stac_network_request.dart';
 import 'package:stac_core/core/stac_options.dart';
 import 'package:stac_framework/stac_framework.dart';
+import 'package:stac_logger/stac_logger.dart';
 
 /// Builder function for displaying errors in Stac widgets.
 ///
@@ -363,6 +364,9 @@ class _StacViewState extends State<_StacView> {
         if (snapshot.hasData) {
           var jsonString =
               snapshot.data!.data['result'][0]['screenJson'] as String;
+          Log.i(
+            'Fetched screen JSON for route ${widget.routeName}: $jsonString',
+          );
 
           // Substitute {{key}} placeholders with values from the arguments
           // this screen was navigated to with (see StacNavigator/navigate
@@ -371,7 +375,10 @@ class _StacViewState extends State<_StacView> {
           // needing a custom parser to read ModalRoute manually.
           final navArgs = ModalRoute.of(context)?.settings.arguments;
           if (navArgs is Map) {
-            jsonString = _StacViewState._substituteVariables(jsonString, navArgs);
+            jsonString = _StacViewState._substituteVariables(
+              jsonString,
+              navArgs,
+            );
           }
 
           return StacService.fromJson(jsonDecode(jsonString), context) ??
