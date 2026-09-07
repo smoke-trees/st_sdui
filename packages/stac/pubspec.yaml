@@ -20,12 +20,28 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_validators: ^1.2.0
   dio: ^5.9.0
-  stac_framework: ^1.0.0
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.3
-  stac_logger: ^1.1.0
-  stac_core: ^1.5.0
   shared_preferences: ^2.5.4
+
+dependency_overrides:
+  stac_core:
+    git:
+      url: https://github.com/smoke-trees/st_sdui.git
+      ref: main
+      path: packages/stac_core
+
+  stac_framework:
+    git:
+      url: https://github.com/smoke-trees/st_sdui.git
+      ref: main
+      path: packages/stac_framework
+
+  stac_logger:
+    git:
+      url: https://github.com/smoke-trees/st_sdui.git
+      ref: main
+      path: packages/stac_logger
 
 dev_dependencies:
   flutter_test:

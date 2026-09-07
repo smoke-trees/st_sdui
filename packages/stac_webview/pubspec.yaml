@@ -19,8 +19,19 @@ dependencies:
     sdk: flutter
   webview_flutter: ^4.13.1
   json_annotation: ^4.10.0
-  stac_core: ^1.3.0
-  stac_framework: ^1.0.0
+
+dependency_overrides:
+  stac_core:
+    git:
+      url: https://github.com/smoke-trees/st_sdui.git
+      ref: main
+      path: packages/stac_core
+
+  stac_framework:
+    git:
+      url: https://github.com/smoke-trees/st_sdui.git
+      ref: main
+      path: packages/stac_framework
 
 dev_dependencies:
   flutter_test:
