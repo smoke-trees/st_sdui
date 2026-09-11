@@ -10,6 +10,7 @@ import 'package:stac_logger/stac_logger.dart';
 ///
 /// This service automatically caches screens and compares versions
 /// to avoid unnecessary network requests.
+///
 class StacCloud {
   const StacCloud._();
 
@@ -57,6 +58,7 @@ class StacCloud {
   ///
   /// Uses the global cache configuration from [StacService.defaultCacheConfig],
   /// which is set via [Stac.initialize].
+  ///
   static Future<Response?> _fetchArtifact({
     required StacArtifactType artifactType,
     required String artifactName,

@@ -8,10 +8,11 @@ import 'package:stac_cli/src/utils/flutter_sdk.dart';
 import 'package:watcher/watcher.dart';
 
 import 'build_target_resolver.dart';
-import 'dev_http_server.dart';
 import 'flutter_process_controller.dart';
 import 'key_commands.dart';
 import 'manifest.dart';
+import 'dev_http_server.dart';
+import 'tailscale_funnel.dart';
 
 /// Builds one target and returns its raw screen or theme JSON.
 typedef BuildOneFn = Future<String> Function(BuildTarget target);
@@ -21,32 +22,27 @@ class WatchCommand {
     required this.projectRoot,
     required this.resolver,
     required this.buildOne,
-    this.port = 8090,
     this.buildDirName = 'stac/.dev-build', // separate from stac/.build so
     // watch-mode saves can never be picked up by `stac deploy --skip-build`
     // — deploy only ever pushes what a real `stac build` produced.
     this.spawnApp = true,
     this.deviceId,
-    this.host = 'localhost', // physical-device default per your call
     this.debounce = const Duration(milliseconds: 300),
-    this.isDevelopment = true,
     this.appTarget = 'lib/main.dart',
   });
 
   final String projectRoot;
   final BuildTargetResolver resolver;
   final BuildOneFn buildOne;
-  final int port;
   final String buildDirName;
   final bool spawnApp;
   final String? deviceId;
-  final String host;
   final Duration debounce;
-  final bool isDevelopment;
   final String appTarget;
 
   Manifest? _manifest;
   DevHttpServer? _server;
+  TailscaleFunnel? _funnel;
   FlutterProcessController? _flutterCtrl;
   KeyCommands? _keys;
   Timer? _debounceTimer;
@@ -61,16 +57,6 @@ class WatchCommand {
 
   Future<void> run() async {
     _manifest = await Manifest.load(projectRoot);
-    _server = DevHttpServer(buildDir: _buildDir, manifest: _manifest!);
-    await _server!.start(port: port);
-
-    _flutterCtrl = FlutterProcessController(
-      projectRoot: projectRoot,
-      host: host,
-      port: port,
-      isDevelopment: isDevelopment,
-      appTarget: appTarget,
-    );
 
     print('\x1B[34mbuilding initial graph…\x1B[0m');
     await resolver.buildGraph(projectRoot);
@@ -81,6 +67,23 @@ class WatchCommand {
       '\x1B[34mfound ${targets.length} screen/theme entries — building all once\x1B[0m',
     );
     await _buildAndApply(targets, triggerReload: false);
+
+    _server = DevHttpServer(buildDir: _buildDir, manifest: _manifest!);
+    await _server!.start();
+    _funnel = TailscaleFunnel(port: _server!.port);
+    final devBaseUrl = await _funnel!.start();
+    if (devBaseUrl == null) {
+      await dispose();
+      throw StateError(
+        'Tailscale Funnel setup is required before starting stac watch.',
+      );
+    }
+
+    _flutterCtrl = FlutterProcessController(
+      projectRoot: projectRoot,
+      devBaseUrl: devBaseUrl,
+      appTarget: appTarget,
+    );
 
     // Ensure the first app request can be served from the completed build.
     if (spawnApp) {
@@ -205,7 +208,7 @@ class WatchCommand {
       final executable = Platform.isWindows
           ? (fvmFlutter ?? 'flutter.bat')
           : (fvmFlutter ?? 'flutter');
-      
+
       final result = await Process.run(
         executable,
         ['devices', '--machine'],
@@ -222,7 +225,9 @@ class WatchCommand {
           .cast<Map<String, dynamic>>();
 
       if (devices.isEmpty) {
-        throw StateError('No devices connected. Run "flutter devices" to verify.');
+        throw StateError(
+          'No devices connected. Run "flutter devices" to verify.',
+        );
       }
 
       // If user specified a device, validate it exists
@@ -254,21 +259,25 @@ class WatchCommand {
         final platform = device['targetPlatform'];
         print('  \x1B[36m${i + 1})\x1B[0m $name ($id) • $platform');
       }
-      
-      print('\n\x1B[33mSelect a device (1-${devices.length}) or press Enter to cancel:\x1B[0m ');
+
+      print(
+        '\n\x1B[33mSelect a device (1-${devices.length}) or press Enter to cancel:\x1B[0m ',
+      );
       stdout.write('> ');
-      
+
       final input = stdin.readLineSync()?.trim();
-      
+
       if (input == null || input.isEmpty) {
         throw StateError('Device selection cancelled.');
       }
-      
+
       final selection = int.tryParse(input);
       if (selection == null || selection < 1 || selection > devices.length) {
-        throw StateError('Invalid selection "$input". Please enter a number between 1 and ${devices.length}.');
+        throw StateError(
+          'Invalid selection "$input". Please enter a number between 1 and ${devices.length}.',
+        );
       }
-      
+
       final selectedDevice = devices[selection - 1]['id'] as String;
       print('\x1B[32m✓ Selected device: $selectedDevice\x1B[0m');
       return selectedDevice;
@@ -296,7 +305,8 @@ class WatchCommand {
       await sub.cancel();
     }
     _watchSubs.clear();
-    await _server?.stop();
     await _flutterCtrl?.dispose();
+    await _funnel?.stop();
+    await _server?.stop();
   }
 }
