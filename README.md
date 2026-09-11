@@ -218,20 +218,75 @@ The CLI automatically passes the Funnel URL to debug builds. Release builds cont
 
 ### Setup
 
-Install Tailscale from [tailscale.com/download](https://tailscale.com/download), sign in, and verify it:
+Tailscale is required only on the computer where `stac watch` runs. Tailscale Funnel publishes the local Stac HTTP server as a public HTTPS endpoint. Android and iOS testing devices do not need the Tailscale app, a VPN, `adb`, or any Stac-specific networking configuration. They only need internet access.
+
+#### Install Tailscale
+
+Download Tailscale from [tailscale.com/download](https://tailscale.com/download) and install the package for your operating system:
+
+- **Windows:** Download and run the Windows installer, then open Tailscale from the Start menu.
+- **macOS:** Download and install the macOS app, then allow any requested network permissions.
+- **Linux:** Follow the distribution-specific installation command shown on the Tailscale download page.
+
+After installation, verify that the command-line client is available:
 
 ```bash
 tailscale version
+```
+
+Sign in the development computer to Tailscale:
+
+```bash
 tailscale up
 ```
 
-Then run:
+The command prints a browser URL the first time. Open that URL, sign in, and approve the computer. Confirm the computer is connected:
+
+```bash
+tailscale status
+```
+
+#### Enable Funnel
+
+Funnel permission must be enabled once for the Tailscale tailnet. Run:
+
+```bash
+tailscale funnel http://127.0.0.1:8090
+```
+
+If Funnel is not enabled, Tailscale prints an authorization URL. Open it, approve Funnel for the tailnet, stop the foreground command with `Ctrl+C`, and run `stac watch` again. The CLI starts Funnel automatically after it has been enabled.
+
+You can inspect the current Funnel configuration with:
+
+```bash
+tailscale funnel status
+```
+
+#### Start Stac Watch
+
+Run this from the Flutter project root:
 
 ```bash
 stac watch
 ```
 
-If Tailscale is missing, `stac watch` explains that Funnel is needed to make the local server reachable from devices, prints the installation link and commands, and exits without launching the app. Once Funnel starts successfully, the CLI prints `Stac server running on <url>`.
+The CLI builds JSON into `stac/.dev-build/`, starts the local HTTP server, starts Funnel, and prints the active URL:
+
+```text
+Stac server running on https://your-machine.your-tailnet.ts.net
+```
+
+That URL is passed automatically to the debug Flutter process. Do not copy it into application code and do not change it when switching between Android emulator, Android device, iOS simulator, or iOS device.
+
+#### Troubleshooting
+
+- **`tailscale` is not recognized:** Restart the terminal after installing Tailscale, or add the Tailscale installation directory to `PATH`.
+- **`Funnel is not enabled on your tailnet`:** Open the authorization URL printed by Tailscale, approve Funnel, then run `stac watch` again.
+- **`No serve config`:** Funnel is not currently configured. Run `tailscale funnel http://127.0.0.1:8090` once and complete the authorization flow.
+- **The device cannot load the URL:** Confirm the device has internet access and that `stac watch` is still running. The Funnel URL is available only while the local server and Funnel are running.
+- **Port `8090` is already in use:** Stop the process using that port before running `stac watch`.
+
+If Tailscale is missing, `stac watch` explains why Funnel is needed, prints the installation link and setup commands, and exits before launching Flutter.
 
 ## Using st_sdui Packages From GitHub
 
