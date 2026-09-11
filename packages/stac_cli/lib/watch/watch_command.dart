@@ -8,7 +8,6 @@ import 'package:stac_cli/src/utils/flutter_sdk.dart';
 import 'package:watcher/watcher.dart';
 
 import 'build_target_resolver.dart';
-import 'dev_http_server.dart';
 import 'flutter_process_controller.dart';
 import 'key_commands.dart';
 import 'manifest.dart';
@@ -21,32 +20,25 @@ class WatchCommand {
     required this.projectRoot,
     required this.resolver,
     required this.buildOne,
-    this.port = 8090,
     this.buildDirName = 'stac/.dev-build', // separate from stac/.build so
     // watch-mode saves can never be picked up by `stac deploy --skip-build`
     // — deploy only ever pushes what a real `stac build` produced.
     this.spawnApp = true,
     this.deviceId,
-    this.host = 'localhost', // physical-device default per your call
     this.debounce = const Duration(milliseconds: 300),
-    this.isDevelopment = true,
     this.appTarget = 'lib/main.dart',
   });
 
   final String projectRoot;
   final BuildTargetResolver resolver;
   final BuildOneFn buildOne;
-  final int port;
   final String buildDirName;
   final bool spawnApp;
   final String? deviceId;
-  final String host;
   final Duration debounce;
-  final bool isDevelopment;
   final String appTarget;
 
   Manifest? _manifest;
-  DevHttpServer? _server;
   FlutterProcessController? _flutterCtrl;
   KeyCommands? _keys;
   Timer? _debounceTimer;
@@ -61,14 +53,9 @@ class WatchCommand {
 
   Future<void> run() async {
     _manifest = await Manifest.load(projectRoot);
-    _server = DevHttpServer(buildDir: _buildDir, manifest: _manifest!);
-    await _server!.start(port: port);
 
     _flutterCtrl = FlutterProcessController(
       projectRoot: projectRoot,
-      host: host,
-      port: port,
-      isDevelopment: isDevelopment,
       appTarget: appTarget,
     );
 
@@ -296,7 +283,6 @@ class WatchCommand {
       await sub.cancel();
     }
     _watchSubs.clear();
-    await _server?.stop();
     await _flutterCtrl?.dispose();
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:stac/src/framework/stac_service.dart';
 import 'package:stac/src/models/stac_artifact_type.dart';
 import 'package:stac/src/models/stac_cache.dart';
@@ -10,6 +13,11 @@ import 'package:stac_logger/stac_logger.dart';
 ///
 /// This service automatically caches screens and compares versions
 /// to avoid unnecessary network requests.
+///
+/// When running in debug mode (`kDebugMode == true`), screens and themes
+/// are read directly from the local dev build directory
+/// ([StacOptions.devOutputDir]) instead of making HTTP requests.
+/// In release mode, the normal network/cache flow is used.
 class StacCloud {
   const StacCloud._();
 
@@ -57,10 +65,26 @@ class StacCloud {
   ///
   /// Uses the global cache configuration from [StacService.defaultCacheConfig],
   /// which is set via [Stac.initialize].
+  ///
+  /// When [kDebugMode] is true, reads directly from the local dev build
+  /// directory ([StacOptions.devOutputDir]) instead of making network requests.
   static Future<Response?> _fetchArtifact({
     required StacArtifactType artifactType,
     required String artifactName,
   }) async {
+    // In debug mode, try reading directly from the dev build directory
+    if (kDebugMode) {
+      final devDir = StacService.options?.devOutputDir;
+      if (devDir != null && devDir.isNotEmpty) {
+        final localResponse = await _fetchArtifactFromLocalFile(
+          buildDir: devDir,
+          artifactType: artifactType,
+          artifactName: artifactName,
+        );
+        if (localResponse != null) return localResponse;
+      }
+    }
+
     final cacheConfig = StacService.defaultCacheConfig;
 
     // Handle network-only strategy
@@ -253,6 +277,59 @@ class StacCloud {
         "isLatest": true,
       },
     );
+  }
+
+  /// Reads an artifact directly from a local build directory.
+  ///
+  /// Expected layout: `<buildDir>/screens/<name>.json` or
+  /// `<buildDir>/themes/<name>.json`.
+  ///
+  /// Returns a [Response] with the same structure as the HTTP API, or `null`
+  /// if the file doesn't exist or can't be read.
+  static Future<Response?> _fetchArtifactFromLocalFile({
+    required String buildDir,
+    required StacArtifactType artifactType,
+    required String artifactName,
+  }) async {
+    try {
+      final subDir = artifactType == StacArtifactType.screen
+          ? 'screens'
+          : 'themes';
+      final jsonKey = artifactType == StacArtifactType.screen
+          ? 'screenJson'
+          : 'themeJson';
+      final file = File('$buildDir/$subDir/$artifactName.json');
+
+      if (!await file.exists()) {
+        Log.d(
+          'StacCloud: Local file not found: ${file.path}',
+        );
+        return null;
+      }
+
+      final rawJson = await file.readAsString();
+      Log.d(
+        'StacCloud: Read local ${artifactType.name} "$artifactName" from ${file.path}',
+      );
+
+      return Response(
+        requestOptions: RequestOptions(path: file.path),
+        data: {
+          'result': [
+            {
+              'name': artifactName,
+              jsonKey: rawJson,
+              'version': 1,
+            },
+          ],
+        },
+      );
+    } catch (e) {
+      Log.d(
+        'StacCloud: Local file read failed for ${artifactType.name} $artifactName: $e',
+      );
+      return null;
+    }
   }
 
   /// Fetches artifact data from network and optionally saves to cache.
