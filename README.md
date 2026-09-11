@@ -188,6 +188,51 @@ This repository is a monorepo. The framework is split into several packages:
 | [`stac_cli`](packages/stac_cli) | CLI to build, watch, and deploy SDUI projects. |
 | `stac-vscode` | VS Code extension for live preview and snippets. |
 
+## Local Development With Tailscale Funnel
+
+`stac watch` runs a local HTTP server for generated JSON and exposes it through Tailscale Funnel. This gives Android emulators, Android devices, iOS simulators, and iOS devices one HTTPS URL without requiring manual IP changes. Testing devices do not need Tailscale installed; only the development computer does.
+
+### How it works
+
+1. Install Tailscale on the development computer and sign in.
+2. Run `stac watch` — it builds JSON to `stac/.dev-build/` and starts the local server.
+3. The CLI starts Tailscale Funnel, displays the public HTTPS URL, and injects it into the debug Flutter app.
+4. File changes trigger hot reload/restart while the app continues fetching JSON from that URL.
+
+### Configuration
+
+```dart
+const options = StacOptions(
+  name: 'MyProject',
+  projectId: 'my_project_id',
+);
+```
+
+The CLI automatically passes the Funnel URL to debug builds. Release builds continue to use the configured production base URL.
+
+### Platform notes
+
+- **Android emulator:** Uses the same public HTTPS URL as every other device.
+- **Android physical device:** Requires internet access, but does not require Tailscale or `adb`.
+- **iOS simulator / physical device:** Uses the same public HTTPS URL and requires internet access.
+
+### Setup
+
+Install Tailscale from [tailscale.com/download](https://tailscale.com/download), sign in, and verify it:
+
+```bash
+tailscale version
+tailscale up
+```
+
+Then run:
+
+```bash
+stac watch
+```
+
+If Tailscale is missing, `stac watch` explains that Funnel is needed to make the local server reachable from devices, prints the installation link and commands, and exits without launching the app. Once Funnel starts successfully, the CLI prints `Stac server running on <url>`.
+
 ## Using st_sdui Packages From GitHub
 
 This repository is a Dart and Flutter monorepo. To use one of its packages in another project, configure both the Git repository URL and the package's path under `packages/`.
@@ -392,5 +437,5 @@ Changes must be committed and pushed before another project can retrieve them fr
 ## Documentation
 
 - 📚 **Full Documentation** – Complete guides and API reference
-- 🛠️ **stac CLI** – Command-line tools for development and the watch-mode dev server
-
+- 🛠️ **stac CLI** – Command-line tools for building, watching, and deploying SDUI projects
+- 🔄 **Local Dev Mode** – Run `stac watch` to build JSON locally and hot-reload your app without a dev server

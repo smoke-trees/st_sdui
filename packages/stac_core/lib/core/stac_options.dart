@@ -12,7 +12,6 @@
 ///   // Override paths if needed (absolute or relative to your project root):
 ///   // sourceDir: '/stac/',
 ///   // outputDir: '/stac/.build',
-///   // devOutputDir: '/stac/.dev-build',
 /// );
 /// ```
 class StacOptions {
@@ -23,7 +22,6 @@ class StacOptions {
     required this.projectId,
     this.sourceDir = '/stac/',
     this.outputDir = '/stac/.build',
-    this.devOutputDir = '/stac/.dev-build',
   });
 
   /// Human‑readable project name.
@@ -45,16 +43,6 @@ class StacOptions {
   /// Can be absolute or relative to your project root.
   final String outputDir;
 
-  /// Directory path where Stac generates build artifacts during development.
-  ///
-  /// When running in debug mode (`kDebugMode == true`), the Stac framework
-  /// reads screen/theme JSON directly from this directory instead of making
-  /// HTTP requests. Defaults to `/stac/.dev-build`.
-  ///
-  /// On iOS simulators this resolves to the host filesystem path.
-  /// On Android/physical devices, ensure files are accessible at this path.
-  final String devOutputDir;
-
   /// Creates a copy of this [StacOptions] with the given fields replaced.
   factory StacOptions.fromJson(Map<String, dynamic> json) {
     return StacOptions(
@@ -63,7 +51,6 @@ class StacOptions {
       projectId: json['projectId'] as String,
       sourceDir: json['sourceDir'] as String,
       outputDir: json['outputDir'] as String,
-      devOutputDir: json['devOutputDir'] as String? ?? '/stac/.dev-build',
     );
   }
 
@@ -75,12 +62,11 @@ class StacOptions {
       'projectId': projectId,
       'sourceDir': sourceDir,
       'outputDir': outputDir,
-      'devOutputDir': devOutputDir,
     };
   }
 
   @override
   String toString() {
-    return 'StacOptions(name: $name, description: $description, projectId: $projectId, sourceDir: $sourceDir, outputDir: $outputDir, devOutputDir: $devOutputDir)';
+    return 'StacOptions(name: $name, description: $description, projectId: $projectId, sourceDir: $sourceDir, outputDir: $outputDir)';
   }
 }

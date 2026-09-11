@@ -22,11 +22,13 @@ import 'package:stac_cli/src/utils/flutter_sdk.dart';
 class FlutterProcessController {
   FlutterProcessController({
     required this.projectRoot,
+    required this.devBaseUrl,
     this.extraArgs = const [],
     this.appTarget = 'lib/main.dart',
   });
 
   final String projectRoot;
+  final String devBaseUrl;
   final List<String> extraArgs;
   final String appTarget;
 
@@ -45,6 +47,7 @@ class FlutterProcessController {
       'run',
       '--machine',
       '--target=$appTarget',
+      '--dart-define=STAC_DEV_BASE_URL=$devBaseUrl',
       if (deviceId != null) ...['-d', deviceId],
       ...extraArgs,
     ];
