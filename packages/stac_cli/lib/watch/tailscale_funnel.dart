@@ -43,8 +43,16 @@ class TailscaleFunnel {
       return null;
     }
 
-    String? url;
-    for (var attempt = 0; attempt < 5 && url == null; attempt++) {
+    // Recent Tailscale versions print the public URL immediately after the
+    // Funnel is configured. Prefer that output because status may briefly
+    // report that no Serve configuration exists while the node is updating.
+    var url = _urlFromText('${start.stdout}\n${start.stderr}');
+    if (url != null) {
+      print('\x1B[32mStac server running on $url\x1B[0m');
+      return url;
+    }
+
+    for (var attempt = 0; attempt < 10 && url == null; attempt++) {
       await Future<void>.delayed(const Duration(milliseconds: 500));
       try {
         final status = await Process.run('tailscale', [
@@ -71,6 +79,13 @@ class TailscaleFunnel {
 
     print('\x1B[32mStac server running on $url\x1B[0m');
     return url;
+  }
+
+  String? _urlFromText(String text) {
+    final match = RegExp(
+      r'https://[A-Za-z0-9][A-Za-z0-9.-]*\.ts\.net/?',
+    ).firstMatch(text);
+    return match?.group(0)?.replaceFirst(RegExp(r'\/$'), '');
   }
 
   String? _urlFromFunnelStatus(String rawStatus) {
