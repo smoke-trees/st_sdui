@@ -189,7 +189,10 @@ class StacService {
       _defaultCacheConfig = cacheConfig;
     }
 
-    StacCloud.setBaseUrl(baseUrl ?? '');
+    const devBaseUrl = String.fromEnvironment('STAC_DEV_BASE_URL');
+    StacCloud.setBaseUrl(
+      kDebugMode && devBaseUrl.isNotEmpty ? devBaseUrl : (baseUrl ?? ''),
+    );
     // Log.i('baseUrlssssssssssssssssssssss: $baseUrl');
 
     _parsers.addAll(parsers);

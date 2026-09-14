@@ -38,7 +38,7 @@ class StacOptions {
   /// Can be absolute or relative to your project root.
   final String sourceDir;
 
-  /// Directory path where Stac generates build artifacts.
+  /// Directory path where Stac generates build artifacts for production.
   ///
   /// Can be absolute or relative to your project root.
   final String outputDir;

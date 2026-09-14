@@ -25,6 +25,8 @@ class DevHttpServer {
 
   HttpServer? _server;
 
+  int get port => _server?.port ?? 8090;
+
   Future<void> start({int port = 8090}) async {
     _server = await HttpServer.bind(InternetAddress.anyIPv4, port);
     print('\x1B[32mstac dev server listening on http://0.0.0.0:$port\x1B[0m');

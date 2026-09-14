@@ -178,3 +178,9 @@ This repository is a monorepo. The framework is split into several packages:
 ## Using From GitHub
 
 See [`usecase.md`](usecase.md) for full instructions on consuming these packages directly from this GitHub repository, including the **stac CLI**.
+
+## Local Development Mode
+
+`stac watch` serves generated JSON through a local HTTP server and exposes it with Tailscale Funnel. The Flutter app fetches and renders the JSON through its normal `StacCloud` network flow. Android and iOS devices only need internet access; they do not need Tailscale installed.
+
+See the repository [local development setup](../../README.md#local-development-with-tailscale-funnel) for installation and configuration instructions.

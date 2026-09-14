@@ -22,18 +22,14 @@ import 'package:stac_cli/src/utils/flutter_sdk.dart';
 class FlutterProcessController {
   FlutterProcessController({
     required this.projectRoot,
-    this.host = 'localhost',
-    this.port = 8090,
+    required this.devBaseUrl,
     this.extraArgs = const [],
-    this.isDevelopment = true,
     this.appTarget = 'lib/main.dart',
   });
 
   final String projectRoot;
-  final String host;
-  final int port;
+  final String devBaseUrl;
   final List<String> extraArgs;
-  final bool isDevelopment;
   final String appTarget;
 
   Process? _process;
@@ -47,16 +43,11 @@ class FlutterProcessController {
   String? _reloadQueuedReason;
 
   Future<void> start({String? deviceId}) async {
-    // Auto-detect if running on Android emulator and adjust host accordingly
-    final resolvedHost = await _resolveHost(deviceId);
-    
     final args = [
       'run',
       '--machine',
       '--target=$appTarget',
-      '--dart-define=STAC_LOCAL_DEV=$isDevelopment',
-      '--dart-define=STAC_DEV_HOST=$resolvedHost',
-      '--dart-define=STAC_DEV_PORT=$port',
+      '--dart-define=STAC_DEV_BASE_URL=$devBaseUrl',
       if (deviceId != null) ...['-d', deviceId],
       ...extraArgs,
     ];
@@ -70,11 +61,6 @@ class FlutterProcessController {
     _process = await Process.start(
       executable,
       args,
-      environment: {
-        'STAC_DEV_HOST': resolvedHost,
-        'STAC_DEV_PORT': port.toString(),
-        'STAC_LOCAL_DEV': isDevelopment.toString(),
-      },
       runInShell: true,
       workingDirectory: projectRoot,
       mode: ProcessStartMode.normal,
@@ -241,174 +227,4 @@ class FlutterProcessController {
     _process = null;
     _appId = null;
   }
-
-  /// Resolves the correct host address based on the target device.
-  /// - Android emulators: '10.0.2.2'
-  /// - iOS simulators: 'localhost' (simulators share host network)
-  /// - Physical devices: local network IP address
-  Future<String> _resolveHost(String? deviceId) async {
-    // If host is explicitly not localhost, respect that choice
-    if (host != 'localhost') {
-      return host;
-    }
-
-    try {
-      final fvmFlutter = FlutterSdk.resolveFlutterSync(projectRoot);
-      final executable = Platform.isWindows
-          ? (fvmFlutter ?? 'flutter.bat')
-          : (fvmFlutter ?? 'flutter');
-
-      // Get list of connected devices
-      final result = await Process.run(
-        executable,
-        ['devices', '--machine'],
-        workingDirectory: projectRoot,
-        runInShell: true,
-      );
-
-      if (result.exitCode != 0) {
-        return host; // Fall back to configured host
-      }
-
-      final devices = jsonDecode(result.stdout as String) as List<dynamic>;
-      Map<String, dynamic>? targetDevice;
-
-      // Find the target device
-      if (deviceId != null) {
-        targetDevice = devices.firstWhere(
-          (d) => d['id'] == deviceId,
-          orElse: () => null,
-        );
-      } else {
-        // No device specified, use the first available device
-        targetDevice = devices.isNotEmpty ? devices.first : null;
-      }
-
-      if (targetDevice != null) {
-        final deviceType = _getDeviceType(targetDevice);
-        
-        switch (deviceType) {
-          case DeviceType.androidEmulator:
-            print('\x1B[34mDetected Android emulator, using host 10.0.2.2\x1B[0m');
-            return '10.0.2.2';
-          
-          case DeviceType.iosSimulator:
-            print('\x1B[34mDetected iOS simulator, using host localhost\x1B[0m');
-            return 'localhost';
-          
-          case DeviceType.physicalDevice:
-            final localIp = await _getLocalNetworkIp();
-            if (localIp != null) {
-              print('\x1B[34mDetected physical device, using host $localIp\x1B[0m');
-              return localIp;
-            } else {
-              print('\x1B[33mWarning: Could not detect local IP, using localhost. '
-                  'Physical device may not be able to connect.\x1B[0m');
-              return 'localhost';
-            }
-          
-          case DeviceType.unknown:
-            print('\x1B[33mWarning: Unknown device type, using localhost\x1B[0m');
-            return 'localhost';
-        }
-      }
-    } catch (e) {
-      // If detection fails, fall back to configured host
-      print('\x1B[33mWarning: Could not detect device type: $e\x1B[0m');
-    }
-
-    return host;
-  }
-
-  /// Gets the device type from device information.
-  DeviceType _getDeviceType(Map<String, dynamic> device) {
-    final targetPlatform = device['targetPlatform'] as String?;
-    final emulator = device['emulator'] as bool?;
-    final id = device['id'] as String?;
-    
-    // Check for Android emulator
-    if (targetPlatform != null && targetPlatform.startsWith('android') && emulator == true) {
-      return DeviceType.androidEmulator;
-    }
-    
-    // Check for iOS simulator
-    if (targetPlatform != null && targetPlatform.startsWith('ios') && emulator == true) {
-      return DeviceType.iosSimulator;
-    }
-    
-    // Check for physical Android device
-    if (targetPlatform != null && targetPlatform.startsWith('android') && emulator == false) {
-      return DeviceType.physicalDevice;
-    }
-    
-    // Check for physical iOS device (not a simulator)
-    if (targetPlatform != null && targetPlatform.startsWith('ios') && emulator == false) {
-      return DeviceType.physicalDevice;
-    }
-    
-    // Additional heuristic: if the ID looks like a device UUID, it's likely physical
-    if (id != null && id.length > 20 && !id.contains('emulator')) {
-      return DeviceType.physicalDevice;
-    }
-    
-    return DeviceType.unknown;
-  }
-
-  /// Gets the local network IP address of this machine.
-  /// Returns null if no suitable IP is found.
-  Future<String?> _getLocalNetworkIp() async {
-    try {
-      final interfaces = await NetworkInterface.list(
-        type: InternetAddressType.IPv4,
-        includeLinkLocal: false,
-      );
-      
-      // Prefer non-loopback, non-virtual interfaces
-      for (final interface in interfaces) {
-        // Skip virtual interfaces (VirtualBox, VMware, WSL, etc.)
-        final name = interface.name.toLowerCase();
-        if (name.contains('virtual') || 
-            name.contains('vmware') || 
-            name.contains('vbox') ||
-            name.contains('wsl') ||
-            name.contains('hyperv')) {
-          continue;
-        }
-        
-        for (final addr in interface.addresses) {
-          if (!addr.isLoopback && !addr.isLinkLocal) {
-            // Prefer private network addresses (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
-            final ip = addr.address;
-            if (ip.startsWith('192.168.') || 
-                ip.startsWith('10.') ||
-                (ip.startsWith('172.') && 
-                 int.parse(ip.split('.')[1]) >= 16 && 
-                 int.parse(ip.split('.')[1]) <= 31)) {
-              return ip;
-            }
-          }
-        }
-      }
-      
-      // Fallback: return any non-loopback address
-      for (final interface in interfaces) {
-        for (final addr in interface.addresses) {
-          if (!addr.isLoopback && !addr.isLinkLocal) {
-            return addr.address;
-          }
-        }
-      }
-    } catch (e) {
-      print('\x1B[33mError detecting local IP: $e\x1B[0m');
-    }
-    
-    return null;
-  }
-}
-
-enum DeviceType {
-  androidEmulator,
-  iosSimulator,
-  physicalDevice,
-  unknown,
 }

@@ -11,16 +11,6 @@ import 'package:stac_cli/watch/watch_command.dart';
 class StacWatchCommand extends BaseCommand {
   StacWatchCommand() {
     argParser.addOption(
-      'host',
-      defaultsTo: 'localhost',
-      help: 'Host address exposed to the Flutter app.',
-    );
-    argParser.addOption(
-      'port',
-      defaultsTo: '8090',
-      help: 'Port for the local Stac development server.',
-    );
-    argParser.addOption(
       'device',
       help: 'Flutter device ID passed to flutter run.',
     );
@@ -28,11 +18,6 @@ class StacWatchCommand extends BaseCommand {
       'app',
       defaultsTo: true,
       help: 'Launch the Flutter app with the watch service.',
-    );
-    argParser.addFlag(
-      'dev',
-      defaultsTo: true,
-      help: 'Enable Stac local development mode.',
     );
   }
 
@@ -48,48 +33,26 @@ class StacWatchCommand extends BaseCommand {
 
   @override
   Future<int> execute() async {
-    final port = int.tryParse(argResults!['port'] as String);
-    if (port == null || port < 1 || port > 65535) {
-      ConsoleLogger.error('--port must be an integer between 1 and 65535.');
-      return 1;
-    }
-
     return startWatchService(
       projectRoot: Directory.current.path,
-      port: port,
-      host: argResults!['host'] as String,
       spawnApp: argResults!['app'] as bool,
       deviceId: argResults!['device'] as String?,
-      isDevelopment: argResults!['dev'] as bool,
     );
   }
 }
 
 Future<void> main(List<String> args) async {
-  final port = int.tryParse(_argValue(args, '--port') ?? '8090');
-  if (port == null || port < 1 || port > 65535) {
-    stderr.writeln('--port must be an integer between 1 and 65535.');
-    exitCode = 1;
-    return;
-  }
-
   exitCode = await startWatchService(
     projectRoot: Directory.current.path,
-    port: port,
-    host: _argValue(args, '--host') ?? 'localhost',
     spawnApp: !args.contains('--no-app'),
     deviceId: _argValue(args, '--device'),
-    isDevelopment: !args.contains('--no-dev'),
   );
 }
 
 Future<int> startWatchService({
   required String projectRoot,
-  required int port,
-  required String host,
   required bool spawnApp,
   required String? deviceId,
-  required bool isDevelopment,
 }) async {
   final buildService = BuildService();
 
@@ -130,8 +93,6 @@ Future<int> startWatchService({
   final watchCmd = WatchCommand(
     projectRoot: projectRoot,
     resolver: resolver,
-    port: port,
-    host: host,
     spawnApp: spawnApp,
     deviceId: deviceId,
 
@@ -150,7 +111,6 @@ Future<int> startWatchService({
         isGetter: target.isGetter,
       ),
     ),
-    isDevelopment: isDevelopment,
     buildDirName: 'stac/.dev-build',
     appTarget: 'lib/main.dart',
   );
