@@ -83,7 +83,27 @@ class WatchCommand {
     _funnel = TailscaleFunnel(port: _server!.port);
     var devBaseUrl = await _funnel!.start();
     String? fallbackInfo;
-    if (devBaseUrl == null) {
+    // Emulator/ADB devices can't reliably resolve *.ts.net via emulator DNS
+    // (Failed host lookup even when funnel URL works in host browser).
+    // Prefer adb reverse for those devices even when funnel is up.
+    final isAdbDevice = _isAdbPreferredDevice(resolvedDeviceForFallback);
+    if (isAdbDevice) {
+      final adbFallback = await _tryAdbReverse(port: _server!.port, deviceId: resolvedDeviceForFallback);
+      if (adbFallback != null) {
+        if (devBaseUrl != null) {
+          print('\x1B[33mEmulator detected — preferring adb reverse over Funnel (emulator DNS cannot resolve *.ts.net).\x1B[0m');
+          print('\x1B[34mFunnel URL $devBaseUrl still available for physical devices.\x1B[0m');
+        }
+        devBaseUrl = adbFallback.url;
+        fallbackInfo = adbFallback.info;
+      } else if (devBaseUrl == null) {
+        final fallback = await _tryLocalFallback(port: _server!.port, deviceId: resolvedDeviceForFallback);
+        if (fallback != null) {
+          devBaseUrl = fallback.url;
+          fallbackInfo = fallback.info;
+        }
+      }
+    } else if (devBaseUrl == null) {
       final fallback = await _tryLocalFallback(
         port: _server!.port,
         deviceId: resolvedDeviceForFallback,
@@ -102,9 +122,12 @@ class WatchCommand {
       );
     }
     if (fallbackInfo != null) {
-      print('\x1B[33mFunnel unavailable — $fallbackInfo\x1B[0m');
+      print('\x1B[33mUsing local fallback — $fallbackInfo\x1B[0m');
       print('\x1B[32mStac server running on $devBaseUrl\x1B[0m');
-      print('\x1B[34mTip: for public URL on any device, run `tailscale funnel --bg http://127.0.0.1:${_server!.port}` once and re-run `stac watch`.\x1B[0m');
+      if (devBaseUrl.startsWith('http://127.0.0.1')) {
+        // ignore: unnecessary_brace_in_string_interps
+        print('\x1B[34mTip: for public URL on any device, run `tailscale funnel --bg http://127.0.0.1:${_server!.port}` once and re-run `stac watch`.\x1B[0m');
+      }
     }
 
     _flutterCtrl = FlutterProcessController(
@@ -383,6 +406,12 @@ class WatchCommand {
     } catch (_) {
       return null;
     }
+  }
+
+  bool _isAdbPreferredDevice(String? deviceId) {
+    if (deviceId == null) return false;
+    final id = deviceId.toLowerCase();
+    return id.startsWith('emulator-') || id.contains('emulator') || id.contains('android');
   }
 
   Future<String?> _getLanUrl(int port) async {
