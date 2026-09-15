@@ -6,6 +6,9 @@ class TailscaleFunnel {
   TailscaleFunnel({required this.port});
 
   final int port;
+  bool _startedByThisRun = false;
+
+  bool get startedByThisRun => _startedByThisRun;
 
   Future<String?> start() async {
     ProcessResult version;
@@ -48,6 +51,7 @@ class TailscaleFunnel {
     // report that no Serve configuration exists while the node is updating.
     var url = _urlFromText('${start.stdout}\n${start.stderr}');
     if (url != null) {
+      _startedByThisRun = true;
       print('\x1B[32mStac server running on $url\x1B[0m');
       return url;
     }
@@ -77,6 +81,7 @@ class TailscaleFunnel {
       return null;
     }
 
+    _startedByThisRun = true;
     print('\x1B[32mStac server running on $url\x1B[0m');
     return url;
   }
@@ -137,6 +142,7 @@ class TailscaleFunnel {
   }
 
   Future<void> stop() async {
+    if (!_startedByThisRun) return;
     try {
       await Process.run('tailscale', ['funnel', 'off'], runInShell: true);
     } on ProcessException {

@@ -70,13 +70,41 @@ class WatchCommand {
 
     _server = DevHttpServer(buildDir: _buildDir, manifest: _manifest!);
     await _server!.start();
+
+    // Resolve device early so fallback can use adb reverse with the right id.
+    String? resolvedDeviceForFallback;
+    try {
+      resolvedDeviceForFallback = await _resolveDeviceId(deviceId);
+    } catch (_) {
+      // No device or user cancelled — still try funnel, fallback will handle it.
+      resolvedDeviceForFallback = deviceId;
+    }
+
     _funnel = TailscaleFunnel(port: _server!.port);
-    final devBaseUrl = await _funnel!.start();
+    var devBaseUrl = await _funnel!.start();
+    String? fallbackInfo;
+    if (devBaseUrl == null) {
+      final fallback = await _tryLocalFallback(
+        port: _server!.port,
+        deviceId: resolvedDeviceForFallback,
+      );
+      if (fallback != null) {
+        devBaseUrl = fallback.url;
+        fallbackInfo = fallback.info;
+      }
+    }
     if (devBaseUrl == null) {
       await dispose();
       throw StateError(
-        'Tailscale Funnel setup is required before starting stac watch.',
+        'Tailscale Funnel not available and local fallback failed.\n'
+        'For emulator: ensure adb is in PATH and run `adb reverse tcp:8090 tcp:8090`.\n'
+        'For physical device: connect to same Wi-Fi and use LAN URL, or enable Funnel with `tailscale funnel http://127.0.0.1:8090` then `stac watch` again.',
       );
+    }
+    if (fallbackInfo != null) {
+      print('\x1B[33mFunnel unavailable — $fallbackInfo\x1B[0m');
+      print('\x1B[32mStac server running on $devBaseUrl\x1B[0m');
+      print('\x1B[34mTip: for public URL on any device, run `tailscale funnel --bg http://127.0.0.1:${_server!.port}` once and re-run `stac watch`.\x1B[0m');
     }
 
     _flutterCtrl = FlutterProcessController(
@@ -87,8 +115,9 @@ class WatchCommand {
 
     // Ensure the first app request can be served from the completed build.
     if (spawnApp) {
-      final resolvedDeviceId = await _resolveDeviceId(deviceId);
-      await _flutterCtrl!.start(deviceId: resolvedDeviceId);
+      // Reuse device resolved earlier for fallback to avoid double prompt.
+      final targetDevice = resolvedDeviceForFallback ?? await _resolveDeviceId(deviceId);
+      await _flutterCtrl!.start(deviceId: targetDevice);
     }
 
     for (final dir in resolver.watchDirs) {
@@ -288,6 +317,98 @@ class WatchCommand {
     }
   }
 
+  Future<_FallbackResult?> _tryLocalFallback({
+    required int port,
+    required String? deviceId,
+  }) async {
+    // 1) Try adb reverse for Android devices/emulators (offline, no funnel).
+    if (deviceId != null || await _isAdbAvailable()) {
+      final adbResult = await _tryAdbReverse(port: port, deviceId: deviceId);
+      if (adbResult != null) return adbResult;
+    }
+
+    // 2) Fallback to LAN IP for physical devices / simulators on same Wi-Fi.
+    final lanUrl = await _getLanUrl(port);
+    if (lanUrl != null) {
+      print('\x1B[33mUsing LAN URL — ensure device and host share Wi-Fi and firewall allows $port.\x1B[0m');
+      return _FallbackResult(lanUrl, 'using LAN URL $lanUrl (adb reverse not available)');
+    }
+    return null;
+  }
+
+  Future<bool> _isAdbAvailable() async {
+    try {
+      final r = await Process.run('adb', ['--version'], runInShell: true);
+      return r.exitCode == 0;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<_FallbackResult?> _tryAdbReverse({
+    required int port,
+    required String? deviceId,
+  }) async {
+    try {
+      // Verify adb exists.
+      final hasAdb = await _isAdbAvailable();
+      if (!hasAdb) return null;
+
+      // If no deviceId yet, just check if any android device is connected.
+      String? target = deviceId;
+      if (target == null) {
+        final devicesRes = await Process.run('adb', ['devices'], runInShell: true);
+        final out = devicesRes.stdout as String;
+        final hasDevice = RegExp(r'\n\S+\s+device\b').hasMatch(out);
+        if (!hasDevice) return null;
+      }
+
+      final args = <String>[
+        if (target != null) ...['-s', target],
+        'reverse',
+        'tcp:$port',
+        'tcp:$port',
+      ];
+      final res = await Process.run('adb', args, runInShell: true);
+      if (res.exitCode == 0) {
+        final url = 'http://127.0.0.1:$port';
+        final hint = target != null
+            ? 'adb reverse tcp:$port tcp:$port on $target -> $url'
+            : 'adb reverse tcp:$port tcp:$port -> $url';
+        print('\x1B[32m✓ $hint\x1B[0m');
+        return _FallbackResult(url, hint);
+      }
+      // adb reverse fails for non-Android targets (iOS, web, windows) — fall through to LAN.
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<String?> _getLanUrl(int port) async {
+    try {
+      final interfaces = await NetworkInterface.list(
+        includeLoopback: false,
+        type: InternetAddressType.IPv4,
+      );
+      for (final iface in interfaces) {
+        for (final addr in iface.addresses) {
+          if (addr.isLoopback) continue;
+          // Prefer private LAN ranges.
+          final ip = addr.address;
+          if (ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.')) {
+            return 'http://$ip:$port';
+          }
+        }
+      }
+      // Fallback to first non-loopback if no private range found.
+      for (final iface in interfaces) {
+        if (iface.addresses.isNotEmpty) return 'http://${iface.addresses.first.address}:$port';
+      }
+    } catch (_) {}
+    return null;
+  }
+
   /// Idempotent: reachable from both the `q` path in [run] and the SIGINT
   /// handler in bin/stac_watch.dart.
   Future<void> dispose() async {
@@ -309,4 +430,10 @@ class WatchCommand {
     await _funnel?.stop();
     await _server?.stop();
   }
+}
+
+class _FallbackResult {
+  _FallbackResult(this.url, this.info);
+  final String url;
+  final String info;
 }
