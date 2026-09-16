@@ -37,6 +37,44 @@ stac deploy
 | `--device <id>` | Target a specific Flutter device (prompts if multiple are connected). |
 | `--no-app` | Watch and rebuild without launching the Flutter app. |
 
+## Commands
+
+### `stac server`
+
+Run a standalone HTTP server to serve pre-built JSON files using Tailscale Funnel. Unlike `stac watch`, this command only serves JSON files without watching for changes or running the Flutter app.
+
+```bash
+stac server
+```
+
+#### Options
+
+| Flag | Description |
+|---|---|
+| `-p, --port <port>` | Port to run the server on (default: 8090) |
+| `-o, --output-dir <dir>` | Directory containing JSON files (default: stac/.build) |
+| `-f, --[no-]funnel` | Expose server using Tailscale funnel (default: on) |
+
+#### Usage
+
+```bash
+# Run server with defaults
+stac server
+
+# Run on custom port without Tailscale funnel
+stac server --port 3000 --no-funnel
+
+# Serve from custom directory
+stac server --output-dir custom/path
+```
+
+#### Endpoints
+
+- `GET /app-screens?screenName=<name>&isLatest=true` - Serves screen JSON
+- `GET /app-themes?themeName=<name>&isLatest=true` - Serves theme JSON
+
+**Note:** Run `stac build` first to generate JSON files before starting the server.
+
 ## How local dev works
 
 1. `stac watch` builds JSON to `stac/.dev-build/` on each file change.
