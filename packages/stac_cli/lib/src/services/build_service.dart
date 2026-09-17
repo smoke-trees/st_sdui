@@ -568,6 +568,9 @@ Future<void> main(List<String> args) async {
             dart,
             ['run', path.basename(scriptFile.path)],
             workingDirectory: projectDir,
+            stdoutEncoding: utf8,
+            stderrEncoding: utf8,
+
             runInShell: Platform
                 .isWindows, // Use shell on Windows for proper PATH resolution
           ).timeout(
