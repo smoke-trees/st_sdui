@@ -36,6 +36,7 @@ class DevHttpServer {
   Future<void> stop() async => _server?.close(force: true);
 
   Future<void> _handle(HttpRequest request) async {
+    final sw = Stopwatch()..start();
     try {
       if (request.uri.path == '/app-screens') {
         await _serve(
@@ -63,7 +64,25 @@ class DevHttpServer {
       request.response
         ..statusCode = HttpStatus.internalServerError
         ..close();
+    } finally {
+      sw.stop();
+      _logRequest(request, sw.elapsed);
     }
+  }
+
+  void _logRequest(HttpRequest request, Duration elapsed) {
+    final status = request.response.statusCode;
+    final color = status >= 500
+        ? '\x1B[31m'
+        : status >= 400
+            ? '\x1B[33m'
+            : '\x1B[32m';
+    final time = DateTime.now().toIso8601String().substring(11, 19);
+    final from = request.connectionInfo?.remoteAddress.address ?? '?';
+    print(
+      '$color$time ${request.method} ${request.uri} -> $status '
+      '(${elapsed.inMilliseconds}ms) from $from\x1B[0m',
+    );
   }
 
   Future<void> _serve(
