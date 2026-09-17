@@ -39,6 +39,38 @@ stac deploy
 
 ## Commands
 
+### `stac build`
+
+Converts Dart widget definitions to JSON for Stac SDUI.
+
+```bash
+stac build
+```
+
+Reads `@StacScreen` and `@StacThemeRef` annotated functions/getters from `stac/`
+(or the directory set in `lib/default_stac_options.dart`) and writes JSON to
+`stac/.build/screens/<name>.json` and `stac/.build/themes/<name>.json`.
+
+### `stac watch`
+
+Starts a local HTTP server, incrementally rebuilds changed screens and themes,
+exposes the server through Tailscale Funnel, and launches the Flutter app with
+the generated HTTPS URL.
+
+```bash
+stac watch
+```
+
+#### Options
+
+| Flag | Description |
+|---|---|
+| `--device <id>` | Target a specific Flutter device (prompts if multiple are connected). |
+| `--no-app` | Watch and rebuild without launching the Flutter app. |
+
+While `stac watch` is running: `r` hot reload, `R` hot restart, `q` quit. Every
+served screen/theme request is logged as `METHOD path -> status (ms) from ip`.
+
 ### `stac server`
 
 Run a standalone HTTP server to serve pre-built JSON files using Tailscale Funnel. Unlike `stac watch`, this command only serves JSON files without watching for changes or running the Flutter app.
@@ -52,13 +84,13 @@ stac server
 | Flag | Description |
 |---|---|
 | `-p, --port <port>` | Port to run the server on (default: 8090) |
-| `-o, --output-dir <dir>` | Directory containing JSON files (default: stac/.build) |
+| `-o, --output-dir <dir>` | Directory containing JSON files, relative to project root (default: stac/.build) |
 | `-f, --[no-]funnel` | Expose server using Tailscale funnel (default: on) |
 
 #### Usage
 
 ```bash
-# Run server with defaults
+# Run server with defaults (serves stac/.build on port 8090)
 stac server
 
 # Run on custom port without Tailscale funnel
@@ -68,15 +100,45 @@ stac server --port 3000 --no-funnel
 stac server --output-dir custom/path
 ```
 
+#### Where JSON comes from
+
+The server serves files from `<project-root>/<output-dir>` (default: `<project-root>/stac/.build`):
+
+```text
+stac/.build/screens/<screenName>.json
+stac/.build/themes/<themeName>.json
+```
+
+Run `stac build` first to generate these files. After rebuilding or hand-editing
+JSON, press `R` to restart the server and pick up the changes — no need to stop
+and start it manually.
+
 #### Endpoints
 
 - `GET /app-screens?screenName=<name>&isLatest=true` - Serves screen JSON
 - `GET /app-themes?themeName=<name>&isLatest=true` - Serves theme JSON
 
-**Note:** Run `stac build` first to generate JSON files before starting the server.
+#### Keys while running
 
-While the server is running, press `R` (or `r`) to restart it and pick up
-updated JSON without stopping the process. Press `Q` or `Ctrl+C` to stop.
+| Key | Action |
+|---|---|
+| `R` / `r` | Restart the server (reloads manifest + JSON from disk, keeps funnel URL) |
+| `Q` / `q`, `Ctrl+C` | Stop the server |
+
+In non-TTY terminals (CI, piped output), press the key followed by `Enter`.
+
+#### Request logs
+
+Every request is logged with method, path, status, duration, and client IP:
+
+```text
+13:37:52 GET /app-screens?screenName=home&isLatest=true -> 200 (9ms) from 127.0.0.1
+13:37:52 GET /app-screens?screenName=missing&isLatest=true -> 404 (0ms) from 127.0.0.1
+```
+
+Status colors: green `2xx`, yellow `4xx`, red `5xx`.
+
+**Note:** Run `stac build` first to generate JSON files before starting the server.
 
 ## How local dev works
 

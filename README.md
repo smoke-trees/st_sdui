@@ -278,6 +278,8 @@ Stac server running on https://your-machine.your-tailnet.ts.net
 
 That URL is passed automatically to the debug Flutter process. Do not copy it into application code and do not change it when switching between Android emulator, Android device, iOS simulator, or iOS device.
 
+While running: `r` hot reload, `R` hot restart, `q` quit. Every request is logged: `GET /app-screens?screenName=home -> 200 (9ms) from 127.0.0.1`.
+
 #### Troubleshooting
 
 - **`tailscale` is not recognized:** Restart the terminal after installing Tailscale, or add the Tailscale installation directory to `PATH`.
@@ -287,6 +289,49 @@ That URL is passed automatically to the debug Flutter process. Do not copy it in
 - **Port `8090` is already in use:** Stop the process using that port before running `stac watch`.
 
 If Tailscale is missing, `stac watch` explains why Funnel is needed, prints the installation link and setup commands, and exits before launching Flutter.
+
+### Standalone server (`stac server`)
+
+`stac watch` rebuilds on every save. `stac server` is the lighter alternative: it
+only serves already-built JSON, without watching files or launching Flutter.
+
+```bash
+stac build
+stac server
+```
+
+**Features:**
+
+- Serves `<project-root>/stac/.build` (`screens/<name>.json`, `themes/<name>.json`); override with `--output-dir`.
+- Endpoints: `GET /app-screens?screenName=<name>&isLatest=true`, `GET /app-themes?themeName=<name>&isLatest=true`.
+- Every request is logged with timestamp, method, path, status, duration, and client IP.
+- Status colors: green `2xx`, yellow `4xx`, red `5xx`.
+
+**Keys while running:**
+
+| Key | Action |
+|---|---|
+| `R` / `r` | Restart the server (reloads manifest + JSON from disk, keeps funnel URL) |
+| `Q` / `q`, `Ctrl+C` | Stop the server |
+
+After running `stac build` or hand-editing JSON files, press `R` to restart the
+server and pick up the changes without manually stopping and restarting.
+
+**Options:**
+
+```bash
+# Run server with defaults (port 8090, Tailscale funnel on)
+stac server
+
+# Run on custom port without Tailscale funnel
+stac server --port 3000 --no-funnel
+
+# Serve from custom directory
+stac server --output-dir custom/path
+```
+
+See the [stac_cli README](packages/stac_cli/README.md#stac-server) for complete
+usage and configuration details.
 
 ## Using st_sdui Packages From GitHub
 
