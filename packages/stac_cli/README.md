@@ -75,6 +75,9 @@ stac server --output-dir custom/path
 
 **Note:** Run `stac build` first to generate JSON files before starting the server.
 
+While the server is running, press `R` (or `r`) to restart it and pick up
+updated JSON without stopping the process. Press `Q` or `Ctrl+C` to stop.
+
 ## How local dev works
 
 1. `stac watch` builds JSON to `stac/.dev-build/` on each file change.
