@@ -20,6 +20,7 @@ import 'package:stac/src/parsers/widgets/stac_text/stac_text_parser.dart';
 import 'package:stac/src/parsers/widgets/stac_tool_tip/stac_tool_tip_parser.dart';
 import 'package:stac/src/services/stac_cloud.dart';
 import 'package:stac/src/services/stac_network_service.dart';
+import 'package:stac/src/utils/stac_media_query.dart';
 import 'package:stac/src/utils/variable_resolver.dart';
 import 'package:stac_core/stac_core.dart';
 import 'package:stac_framework/stac_framework.dart';
@@ -143,6 +144,7 @@ class StacService {
     const StacBackdropFilterParser(),
     const StacVerticalDividerParser(),
     const StacSelectableTextParser(),
+    const StacLayoutBuilderParser(),
   ];
 
   static final _actionParsers = <StacActionParser>[
@@ -241,9 +243,18 @@ class StacService {
       }
 
       // Resolve variables in JSON (skip for setValue to avoid recursion)
-      final resolvedJson = widgetType == WidgetType.setValue.name
+      final resolvedVariables = widgetType == WidgetType.setValue.name
           ? json
           : resolveVariablesInJson(json, StacRegistry.instance);
+
+      // Resolve screen-relative size expressions ("screen.width * 0.5",
+      // "50%w", ...) using MediaQuery. Parent-relative expressions are left
+      // untouched here and handled by the `layoutBuilder` widget which has
+      // LayoutBuilder constraints.
+      final resolvedJson = resolvedVariables is Map<String, dynamic>
+          ? StacMediaQuery.resolveJson(context, resolvedVariables)
+              as Map<String, dynamic>
+          : resolvedVariables;
 
       final model = stacParser.getModel(resolvedJson);
       return stacParser.parse(context, model);
@@ -298,9 +309,15 @@ class StacService {
       }
 
       // Resolve variables in JSON (skip for setValue to avoid recursion)
-      final resolvedJson = widgetType == WidgetType.setValue.name
+      final resolvedVariables = widgetType == WidgetType.setValue.name
           ? widget.toJson()
           : resolveVariablesInJson(widget.toJson(), StacRegistry.instance);
+
+      // Resolve screen-relative size expressions (see fromJson).
+      final resolvedJson = resolvedVariables is Map<String, dynamic>
+          ? StacMediaQuery.resolveJson(context, resolvedVariables)
+              as Map<String, dynamic>
+          : resolvedVariables;
 
       final model = stacParser.getModel(resolvedJson);
       return stacParser.parse(context, model);
