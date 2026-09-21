@@ -48,8 +48,9 @@ export 'geometry/stac_edge_insets/stac_edge_insets.dart';
 export 'geometry/stac_offset/stac_offset.dart';
 export 'geometry/stac_rect/stac_rect.dart';
 export 'geometry/stac_size/stac_size.dart';
-export 'geometry/stac_visual_density/stac_visual_density.dart';
 // Interaction and behavior
+export 'geometry/stac_size_expression/stac_size_expression.dart';
+export 'geometry/stac_visual_density/stac_visual_density.dart';
 export 'interaction/stac_drag_start_behavior.dart';
 export 'interaction/stac_hit_test_behavior.dart';
 export 'interaction/stac_mouse_cursor.dart';

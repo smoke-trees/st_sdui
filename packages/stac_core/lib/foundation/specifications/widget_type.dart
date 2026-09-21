@@ -194,6 +194,12 @@ enum WidgetType {
   /// Refresh indicator widget
   refreshIndicator,
 
+  /// Metrics scope widget
+  responsive,
+
+  /// Device-resolved box widget
+  responsiveBox,
+
   /// Row widget
   row,
 

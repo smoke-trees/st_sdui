@@ -92,6 +92,8 @@ class StacService {
     const StacAlignParser(),
     const StacPageViewParser(),
     const StacRefreshIndicatorParser(),
+    const StacResponsiveParser(),
+    const StacResponsiveBoxParser(),
     const StacNetworkWidgetParser(),
     const StacCircleAvatarParser(),
     const StacChipParser(),
