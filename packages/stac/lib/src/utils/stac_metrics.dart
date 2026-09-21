@@ -120,22 +120,18 @@ extension StacContextMetrics on BuildContext {
 /// This is the true `Get.width` / `Get.height` equivalent. Prefer the
 /// context extensions above: they rebuild correctly on rotation, split
 /// screen and foldables, this does not.
-class StacScreen {
-  const StacScreen._();
+class StacScreenMetrics {
+  const StacScreenMetrics._();
 
   static ui.FlutterView get _view =>
       WidgetsBinding.instance.platformDispatcher.views.first;
 
   static Size get size => _view.physicalSize / _view.devicePixelRatio;
-
   static double get width => size.width;
-
   static double get height => size.height;
-
   static double get devicePixelRatio => _view.devicePixelRatio;
 
   static double w(double factor) => width * factor;
-
   static double h(double factor) => height * factor;
 
   static StacMetrics get metrics {
