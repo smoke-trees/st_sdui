@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:stac/src/framework/stac_service.dart';
 import 'package:stac/src/models/stac_artifact_type.dart';
 import 'package:stac/src/models/stac_cache.dart';
@@ -242,19 +243,19 @@ class StacCloud {
   static Future<Response> _makeArtifactRequest({
     required StacArtifactType artifactType,
     required String artifactName,
-  }) {
-    final fetchUrl = _getFetchUrl(artifactType);
+  }) async {
+    final fetchUrl = '${_getFetchUrl(artifactType)}/get-latest';
     final queryParamName = _getQueryParamName(artifactType);
 
-    print('\x1B[32m queryParamName $queryParamName fetch $fetchUrl \x1B[0m');
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    return _dio.get(
-      fetchUrl,
-      queryParameters: <String, dynamic>{
-        queryParamName: artifactName,
-        "isLatest": true,
-      },
-    );
+    var params = <String, dynamic>{
+      queryParamName: artifactName,
+      "appVersion": packageInfo.version,
+    };
+    print('\x1B[32m params $params fetch $fetchUrl \x1B[0m');
+
+    return _dio.get(fetchUrl, queryParameters: params);
   }
 
   /// Fetches artifact data from network and optionally saves to cache.

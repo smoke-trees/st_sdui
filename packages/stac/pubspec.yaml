@@ -24,6 +24,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.3
   shared_preferences: ^2.5.4
+  package_info_plus: ^10.2.1
   stac_core:
     path: ../stac_core
   stac_framework:
