@@ -38,7 +38,7 @@ class DevHttpServer {
   Future<void> _handle(HttpRequest request) async {
     final sw = Stopwatch()..start();
     try {
-      if (request.uri.path == '/app-screens') {
+      if (request.uri.path == '/app-screens/get-latest') {
         await _serve(
           request,
           type: ArtifactType.screen,
@@ -46,7 +46,7 @@ class DevHttpServer {
           jsonKey: 'screenJson',
           subDir: 'screens',
         );
-      } else if (request.uri.path == '/app-themes') {
+      } else if (request.uri.path == '/app-themes/get-latest') {
         await _serve(
           request,
           type: ArtifactType.theme,
@@ -75,8 +75,8 @@ class DevHttpServer {
     final color = status >= 500
         ? '\x1B[31m'
         : status >= 400
-            ? '\x1B[33m'
-            : '\x1B[32m';
+        ? '\x1B[33m'
+        : '\x1B[32m';
     final time = DateTime.now().toIso8601String().substring(11, 19);
     final from = request.connectionInfo?.remoteAddress.address ?? '?';
     print(
