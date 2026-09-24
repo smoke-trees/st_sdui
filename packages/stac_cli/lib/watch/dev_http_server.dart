@@ -6,11 +6,11 @@ import 'manifest.dart';
 /// Byte-for-byte stand-in for your real backend's two read endpoints.
 ///
 /// GET /app-screens?screenName=X&isLatest=true
-///   -> {"result": [{"name": "X", "screenJson": "<json-string>", "version": N}]}
+///   -> {"result": [{"name": "X", "screenJson": "<json-string>", "version": "1.0.0"}]}
 ///   (matches _StacView's read: snapshot.data!.data['result'][0]['screenJson'])
 ///
 /// GET /app-themes?themeName=Y&isLatest=true
-///   -> {"result": [{"name": "Y", "themeJson": "<json-string>", "version": N}]}
+///   -> {"result": [{"name": "Y", "themeJson": "<json-string>", "version": "1.0.0"}]}
 ///   (matches StacAppTheme.fromCloud: rawData['result'][0]['themeJson'])
 ///
 /// Uses raw dart:io HttpServer — no new deps.
@@ -120,7 +120,7 @@ class DevHttpServer {
         {
           'name': name,
           jsonKey: rawJson, // string-encoded, matches backend's real shape
-          'version': entry?.version ?? 1,
+          'version': entry?.version ?? '1.0.0',
         },
       ],
     });

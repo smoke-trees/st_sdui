@@ -17,6 +17,7 @@ Why use st_sdui?
 - 💻 **Familiar Dart syntax:** Write your server UI using a purely Dart DSL. It feels just like writing traditional Flutter code.
 - 🧩 **Native rendering:** st_sdui translates your server's payload into native Flutter widgets on the client.
 - 🧱 **Prebuilt components:** Comes with a large library of ready-to-use standard Flutter widgets.
+- 📐 **Responsive widgets:** Resolve screen, parent-box, safe-area, keyboard, and breakpoint dimensions on the device.
 - 🌐 **Network requests:** Trigger API calls and manage data directly from your server payload.
 - 🧭 **Navigation:** Control routing, open dialogs, and trigger bottom sheets from the backend.
 - 📝 **Forms & validation:** Handle form state and validation from the server.
@@ -161,6 +162,32 @@ StacWidget primaryButton({
 </tr>
 </table>
 
+## Responsive Widgets
+
+The `stac` runtime resolves responsive size expressions against Flutter's current device metrics. Layouts therefore adapt to screen size, orientation, safe areas, keyboard height, text scaling, and their parent box.
+
+`StacResponsiveBox` provides expression-based dimensions, minimum and maximum constraints, padding, margin, and alignment. `StacResponsive` provides the parent-box scope and resolves `{{ ... }}` size-expression tokens in its subtree before parsing.
+
+```dart
+StacResponsiveBox(
+  width: StacSizeExpr.sw * 0.9,
+  maxWidth: StacSizeExpr.px(600),
+  padding: StacEdgeInsetsExpr.all(StacSizeExpr.sw * 0.04),
+  child: StacContainer(color: '#FF0000'),
+)
+```
+
+For custom parsers, Flutter `BuildContext` helpers are also available:
+
+```dart
+context.stacW(0.5);
+context.stacH(0.25);
+context.stacMetrics;
+context.stacSafeArea;
+```
+
+See the [`stac_core` responsive documentation](../stac_core/README.md#responsive-widgets) for the DSL and JSON examples.
+
 ## Packages
 
 This repository is a monorepo. The framework is split into several packages:
@@ -182,5 +209,12 @@ See [`usecase.md`](usecase.md) for full instructions on consuming these packages
 ## Local Development Mode
 
 `stac watch` serves generated JSON through a local HTTP server and exposes it with Tailscale Funnel. The Flutter app fetches and renders the JSON through its normal `StacCloud` network flow. Android and iOS devices only need internet access; they do not need Tailscale installed.
+
+The development server matches the current Stac Cloud request format:
+
+- `GET /app-screens/get-latest?screenName=<name>&appVersion=<version>`
+- `GET /app-themes/get-latest?themeName=<name>&appVersion=<version>`
+
+The app version is read on the device using `package_info_plus` and sent as the `appVersion` query parameter.
 
 See the repository [local development setup](../../README.md#local-development-with-tailscale-funnel) for installation and configuration instructions.

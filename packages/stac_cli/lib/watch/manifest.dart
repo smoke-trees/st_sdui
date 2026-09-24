@@ -1,6 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+String _parseVersion(dynamic value) {
+  final version = value?.toString() ?? '0.0.0';
+  final parts = version.split('.');
+  final major = int.tryParse(parts.isNotEmpty ? parts[0] : '') ?? 0;
+  final minor = int.tryParse(parts.length > 1 ? parts[1] : '') ?? 0;
+  final patch =
+      int.tryParse(parts.length > 2 ? parts[2].split('-').first : '') ?? 0;
+  return '$major.$minor.$patch';
+}
+
+String _nextPatchVersion(String version) {
+  final parsed = _parseVersion(version);
+  final parts = parsed.split('.').map(int.parse).toList();
+  return '${parts[0]}.${parts[1]}.${parts[2] + 1}';
+}
+
 /// The kind of artifact tracked in the manifest.
 enum ArtifactType { screen, theme }
 
@@ -20,7 +36,7 @@ class ManifestEntry {
   final ArtifactType type;
   final String sourceFile;
   String hash;
-  int version;
+  String version;
   DateTime builtAt;
   String? deployedHash;
 
@@ -31,7 +47,7 @@ class ManifestEntry {
     type: ArtifactType.values.byName(json['type'] as String),
     sourceFile: json['sourceFile'] as String,
     hash: json['hash'] as String,
-    version: json['version'] as int,
+    version: _parseVersion(json['version']),
     builtAt: DateTime.parse(json['builtAt'] as String),
     deployedHash: json['deployedHash'] as String?,
   );
@@ -102,7 +118,7 @@ class Manifest {
     if (existing != null && existing.hash == hash) {
       return false; // content identical to last build — skip reload
     }
-    final version = (existing?.version ?? 0) + 1;
+    final version = _nextPatchVersion(existing?.version ?? '0.0.0');
     _entries[key] = ManifestEntry(
       name: name,
       type: type,

@@ -17,6 +17,7 @@ Why use st_sdui?
 - 💻 **Familiar Dart syntax:** Write your server UI using a purely Dart DSL. It feels just like writing traditional Flutter code.
 - 🧩 **Native rendering:** st_sdui translates your server's payload into native Flutter widgets on the client.
 - 🧱 **Prebuilt components:** Comes with a large library of ready-to-use standard Flutter widgets.
+- 📐 **Responsive widgets:** Resolve screen, parent-box, safe-area, keyboard, and breakpoint dimensions on the device.
 - 🌐 **Network requests:** Trigger API calls and manage data directly from your server payload.
 - 🧭 **Navigation:** Control routing, open dialogs, and trigger bottom sheets from the backend.
 - 📝 **Forms & validation:** Handle form state and validation from the server.
@@ -174,6 +175,48 @@ StacWidget primaryButton({
 </tr>
 </table>
 
+## Responsive Widgets
+
+A screen definition runs on the build machine and does not have access to Flutter's `BuildContext`. Responsive widgets solve this by serializing size expressions in the Dart DSL and resolving them on the device during layout.
+
+Use `StacResponsiveBox` for dimensions, padding, margins, alignment, and parent-relative sizing:
+
+```dart
+StacResponsiveBox(
+  width: StacSizeExpr.sw * 0.9,
+  maxWidth: StacSizeExpr.px(600),
+  padding: StacEdgeInsetsExpr.all(StacSizeExpr.sw * 0.04),
+  child: StacContainer(color: '#FF0000'),
+)
+```
+
+Use `StacResponsive` to make its box available as the parent scope to a subtree. It can also resolve `{{ ... }}` size expressions in widgets whose properties do not directly support `StacSizeExpr`:
+
+```dart
+StacResponsive(
+  child: StacWidget(
+    jsonData: {
+      'type': 'positioned',
+      'left': '{{sw * 0.04}}',
+      'right': '{{sw * 0.04}}',
+      'bottom': '{{sb + 16}}',
+      'child': {'type': 'text', 'data': 'Cart'},
+    },
+  ),
+)
+```
+
+Tokens that are not valid size expressions, such as `{{name}}` or `{{price}}`, are left unchanged for normal data binding.
+
+`StacSizeExpr` supports screen and parent dimensions (`sw`, `sh`, `pw`, `ph`), safe-area values, keyboard height, text scale, and device pixel ratio. Values can be composed with arithmetic, breakpoint helpers, and constraints such as `clampBetween`:
+
+```dart
+StacSizeExpr.responsive(mobile: 16, tablet: 24, desktop: 32)
+(StacSizeExpr.sh * 0.18).clampBetween(min: 96, max: 220)
+```
+
+See the [`stac_core` responsive documentation](packages/stac_core/README.md#responsive-widgets) for more DSL and JSON examples.
+
 ## Packages
 
 This repository is a monorepo. The framework is split into several packages:
@@ -278,7 +321,7 @@ Stac server running on https://your-machine.your-tailnet.ts.net
 
 That URL is passed automatically to the debug Flutter process. Do not copy it into application code and do not change it when switching between Android emulator, Android device, iOS simulator, or iOS device.
 
-While running: `r` hot reload, `R` hot restart, `q` quit. Every request is logged: `GET /app-screens?screenName=home -> 200 (9ms) from 127.0.0.1`.
+While running: `r` hot reload, `R` hot restart, `q` quit. Every request is logged: `GET /app-screens/get-latest?screenName=home&appVersion=1.0.0 -> 200 (9ms) from 127.0.0.1`.
 
 #### Troubleshooting
 
@@ -303,7 +346,7 @@ stac server
 **Features:**
 
 - Serves `<project-root>/stac/.build` (`screens/<name>.json`, `themes/<name>.json`); override with `--output-dir`.
-- Endpoints: `GET /app-screens?screenName=<name>&isLatest=true`, `GET /app-themes?themeName=<name>&isLatest=true`.
+- Endpoints match Stac Cloud: `GET /app-screens/get-latest?screenName=<name>&appVersion=<version>` and `GET /app-themes/get-latest?themeName=<name>&appVersion=<version>`.
 - Every request is logged with timestamp, method, path, status, duration, and client IP.
 - Status colors: green `2xx`, yellow `4xx`, red `5xx`.
 

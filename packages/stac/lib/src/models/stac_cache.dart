@@ -23,8 +23,8 @@ class StacCache {
   /// The JSON string containing the Stac widget definition.
   final String stacJson;
 
-  /// The version number of the screen.
-  final int version;
+  /// The semantic version of the artifact.
+  final String version;
 
   /// The timestamp when this screen was cached.
   final DateTime cachedAt;
@@ -50,7 +50,7 @@ class StacCache {
   StacCache copyWith({
     String? name,
     String? stacJson,
-    int? version,
+    String? version,
     DateTime? cachedAt,
   }) {
     return StacCache(

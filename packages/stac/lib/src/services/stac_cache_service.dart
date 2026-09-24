@@ -60,7 +60,7 @@ class StacCacheService {
   static Future<bool> saveArtifact({
     required String name,
     required String stacJson,
-    required int version,
+    required String version,
     required StacArtifactType artifactType,
   }) async {
     try {

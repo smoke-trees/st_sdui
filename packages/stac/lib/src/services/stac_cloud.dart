@@ -39,6 +39,54 @@ class StacCloud {
     }
   }
 
+  /// Gets the response field containing the artifact JSON.
+  static String _getJsonFieldName(StacArtifactType artifactType) {
+    switch (artifactType) {
+      case StacArtifactType.screen:
+        return 'screenJson';
+      case StacArtifactType.theme:
+        return 'themeJson';
+    }
+  }
+
+  /// Compares semantic versions such as `1.0.0` and `1.0.0-beta.1`.
+  ///
+  /// This intentionally supports the existing numeric cache entries as well,
+  /// so a numeric version is treated as `major.0.0`.
+  static int _compareVersions(String left, String right) {
+    final leftParts = _parseVersion(left);
+    final rightParts = _parseVersion(right);
+
+    for (var i = 0; i < 3; i++) {
+      final comparison = leftParts.core[i].compareTo(rightParts.core[i]);
+      if (comparison != 0) return comparison;
+    }
+
+    if (leftParts.preRelease == rightParts.preRelease) return 0;
+    if (leftParts.preRelease.isEmpty) return 1;
+    if (rightParts.preRelease.isEmpty) return -1;
+    return leftParts.preRelease.compareTo(rightParts.preRelease);
+  }
+
+  static ({List<int> core, String preRelease}) _parseVersion(String version) {
+    final withoutBuild = version.split('+').first;
+    final separator = withoutBuild.indexOf('-');
+    final core = separator == -1
+        ? withoutBuild
+        : withoutBuild.substring(0, separator);
+    final preRelease = separator == -1
+        ? ''
+        : withoutBuild.substring(separator + 1);
+    final parts = core
+        .split('.')
+        .map((part) => int.tryParse(part) ?? 0)
+        .toList();
+    while (parts.length < 3) {
+      parts.add(0);
+    }
+    return (core: parts.take(3).toList(), preRelease: preRelease);
+  }
+
   /// Gets the query parameter name for a given artifact type.
   static String _getQueryParamName(StacArtifactType artifactType) {
     switch (artifactType) {
@@ -274,24 +322,23 @@ class StacCloud {
     );
 
     // Save to cache if enabled and response is valid
-    if (saveToCache &&
-        response.data != null &&
-        response.data['result'] != null &&
-        response.data['result'] != null) {
-      final result = response.data['result'][0];
-      final version = result['version'] as int?;
-      final stacJson = artifactType == StacArtifactType.screen
-          ? result['screenJson'] as String?
-          : result['themeJson'] as String?;
-      final name = result['name'] as String?;
+    final responseData = response.data;
+    if (saveToCache && responseData is Map<String, dynamic>) {
+      final results = responseData['result'];
+      if (results is List && results.isNotEmpty && results.first is Map) {
+        final result = Map<String, dynamic>.from(results.first as Map);
+        final version = result['version']?.toString();
+        final stacJson = result[_getJsonFieldName(artifactType)]?.toString();
+        final name = result['name']?.toString();
 
-      if (version != null && stacJson != null && name != null) {
-        await StacCacheService.saveArtifact(
-          name: name,
-          stacJson: stacJson,
-          version: version,
-          artifactType: artifactType,
-        );
+        if (version != null && stacJson != null && name != null) {
+          await StacCacheService.saveArtifact(
+            name: name,
+            stacJson: stacJson,
+            version: version,
+            artifactType: artifactType,
+          );
+        }
       }
     }
 
@@ -307,9 +354,13 @@ class StacCloud {
     return Response(
       requestOptions: RequestOptions(path: fetchUrl),
       data: {
-        'name': cachedArtifact.name,
-        'stacJson': cachedArtifact.stacJson,
-        'version': cachedArtifact.version,
+        'result': [
+          {
+            'name': cachedArtifact.name,
+            _getJsonFieldName(artifactType): cachedArtifact.stacJson,
+            'version': cachedArtifact.version,
+          },
+        ],
       },
     );
   }
@@ -322,7 +373,7 @@ class StacCloud {
   static Future<void> _fetchAndUpdateArtifactInBackground({
     required StacArtifactType artifactType,
     required String artifactName,
-    required int cachedVersion,
+    required String cachedVersion,
   }) async {
     final inProgressSet = _backgroundFetchInProgress[artifactType]!;
     // Prevent duplicate background fetches for the same artifact
@@ -334,26 +385,29 @@ class StacCloud {
         artifactName: artifactName,
       );
 
-      if (response.data != null &&
-          response.data['result'] != null &&
-          response.data['result'].isNotEmpty) {
-        final result = response.data['result'][0];
-        final serverVersion = result['version'] as int?;
-        final serverStacJson = result['stacJson'] as String?;
-        final name = result['name'] as String?;
+      final responseData = response.data;
+      if (responseData is Map<String, dynamic>) {
+        final results = responseData['result'];
+        if (results is List && results.isNotEmpty && results.first is Map) {
+          final result = Map<String, dynamic>.from(results.first as Map);
+          final serverVersion = result['version']?.toString();
+          final serverStacJson = result[_getJsonFieldName(artifactType)]
+              ?.toString();
+          final name = result['name']?.toString();
 
-        // Only update if server has newer version
-        if (serverVersion != null &&
-            serverStacJson != null &&
-            name != null &&
-            serverVersion > cachedVersion) {
-          // Update cache with new version for next load
-          await StacCacheService.saveArtifact(
-            name: name,
-            stacJson: serverStacJson,
-            version: serverVersion,
-            artifactType: artifactType,
-          );
+          // Only update if server has newer version
+          if (serverVersion != null &&
+              serverStacJson != null &&
+              name != null &&
+              _compareVersions(serverVersion, cachedVersion) > 0) {
+            // Update cache with new version for next load
+            await StacCacheService.saveArtifact(
+              name: name,
+              stacJson: serverStacJson,
+              version: serverVersion,
+              artifactType: artifactType,
+            );
+          }
         }
       }
     } catch (e) {

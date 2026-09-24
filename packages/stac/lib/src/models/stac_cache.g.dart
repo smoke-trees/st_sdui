@@ -9,7 +9,7 @@ part of 'stac_cache.dart';
 StacCache _$StacCacheFromJson(Map<String, dynamic> json) => StacCache(
   name: json['name'] as String,
   stacJson: json['stacJson'] as String,
-  version: (json['version'] as num).toInt(),
+  version: json['version']?.toString() ?? '0.0.0',
   cachedAt: DateTime.parse(json['cachedAt'] as String),
 );
 
