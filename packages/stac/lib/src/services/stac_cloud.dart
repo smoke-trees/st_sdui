@@ -280,7 +280,9 @@ class StacCloud {
         response.data['result'] != null) {
       final result = response.data['result'][0];
       final version = result['version'] as int?;
-      final stacJson = result['stacJson'] as String?;
+      final stacJson = artifactType == StacArtifactType.screen
+          ? result['screenJson'] as String?
+          : result['themeJson'] as String?;
       final name = result['name'] as String?;
 
       if (version != null && stacJson != null && name != null) {
